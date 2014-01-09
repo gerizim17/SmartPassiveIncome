@@ -78,3 +78,15 @@ Route::filter('csrf', function()
 		throw new Illuminate\Session\TokenMismatchException;
 	}
 });
+
+Route::filter('birthday', function()
+{
+    if (date('d/m') == '23/12') {
+        return View::make('monteCarloEstimate');
+    }
+});
+
+Route::filter('birthday', function($route, $request, $first, $second, $optional = 'Yep!')
+{
+    return "{$first} - {$second} - {$third}";
+});
