@@ -2,7 +2,7 @@
 
 @section('content')
     <h1>{{ trans('general.goals') }}<small> {{ trans('general.goalstext') }}</small></h1>
-
+    {{ trans('instructions.goals') }}
     {{ Flowchart::drawGoalsCharts("goals_chart_div") }}
 
    

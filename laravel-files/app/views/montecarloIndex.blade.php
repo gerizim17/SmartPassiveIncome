@@ -1,11 +1,13 @@
 @extends('layouts.layout')
 
 @section('content')
-    <h1>Montecarlo Estimates!</h1>    
+    <h1>Montecarlo Estimates!</h1>
     @if ($realestates->isEmpty())        
         <p>There are no real estate! :(</p>
     @else        
     
+    {{ trans('instructions.montecarloestimate') }}
+
     @if (isset($realestate_id) && isset($renttier))
         {{ Flowchart::drawColumnChart($realestate_id, "bar_div") }}
         {{ Flowchart::drawPieChart($realestate_id, "pie_div") }}

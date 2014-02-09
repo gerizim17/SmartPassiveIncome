@@ -4,6 +4,7 @@
     <div class="page-header">
         <h1>All Real Estate <small>Trading time for dollars is the biggest barrier!</small></h1>
     </div>
+    {{ trans('instructions.rentalhistory') }}
     <form name="dropDownForm" id="dropDownForm" action="{{ url('rentalhistory/selectrealestate') }}" method="post" role="form">
     <div class="form-group">        
         <select class="form-control" name="realestate_dropdown" onchange="$('#dropDownForm').submit();">
