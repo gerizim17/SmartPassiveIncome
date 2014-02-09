@@ -13,4 +13,9 @@ class Realestate extends BaseModel {
         'address1.Required' => 'Address1 field is required.'
     );
 
+    public static function getByUser($id){
+		return Realestate::whereUserId($id)
+			->get();		
+	}
+
 }

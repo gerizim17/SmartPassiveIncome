@@ -2,13 +2,15 @@
 
 class RealestatesController extends BaseController
 {
+
+    public function __construct()
+    {
+        $this->beforeFilter('auth');
+    }
+    
     public function index()
     {
-        //Show a listing of real estate.
-        //$realestates = Realestate::all();        
-        //return View::make('realestateIndex', compact('realestates'));        
-
-        $realestates = Realestate::all(); 
+        $realestates = Realestate::getByUser(Auth::user()->id); 
         $mortgages = Mortgage::all(); 
         $realestates = compact('realestates');
         $mortgages = compact('mortgages');

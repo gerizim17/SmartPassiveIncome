@@ -2,13 +2,18 @@
 
 class RentalhistoryController extends BaseController
 {
+    public function __construct()
+    {
+        $this->beforeFilter('auth');
+    }
+
     public function index($realestate_id = null)
     {        
         // Show a listing of real estate.      
-        $realestates = Realestate::all();  
+        $realestates = Realestate::getByUser(Auth::user()->id);
         $realestates = compact('realestates');
         return View::make('rentalHistoryIndex')
-            ->with($realestates);      
+            ->with($realestates);
     }
 
     public function create($realestate_id, $rentalhistory_id = null) {
@@ -98,7 +103,7 @@ class RentalhistoryController extends BaseController
             $formatted_start_date = date('Y').'/01/01';
             $formatted_end_date = date('Y').'/12/31';
         }       
-        $realestates = Realestate::all();        
+        $realestates = Realestate::getByUser(Auth::user()->id);
         $rentalhistories = Rentalhistory::getByReIdBetweenDates($realestate_id, $formatted_start_date, $formatted_end_date);
         $estimate = Estimate::getByReId($realestate_id);            
         $renttier = Renttier::getByReId($realestate_id);

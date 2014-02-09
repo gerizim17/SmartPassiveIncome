@@ -4,10 +4,14 @@
 
 class MontecarloController extends BaseController
 {
+    public function __construct()
+    {
+        $this->beforeFilter('auth');
+    }
 
     public function index($realestate_id = null)
     {
-        $realestates = Realestate::all();
+        $realestates = Realestate::getByUser(Auth::user()->id);
         $realestates = compact('realestates');
 
         if($realestate_id != null){
@@ -82,7 +86,7 @@ class MontecarloController extends BaseController
 
      public function newMontecarloEstimate()
     {
-        $realestates = Realestate::all();
+        $realestates = Realestate::getByUser(Auth::user()->id);
         $realestates = compact('realestates');
         
         return View::make('montecarloIndex')->with($realestates);
@@ -101,7 +105,7 @@ class MontecarloController extends BaseController
     }
 
     public function handlePropertyInfoSave(){
-        $realestates = Realestate::all();
+        $realestates = Realestate::getByUser(Auth::user()->id);
         $realestates = compact('realestates');
 
         error_log("saving property info...");
@@ -195,7 +199,7 @@ class MontecarloController extends BaseController
 
     public function handleSelectRealestate(){
         $realestate_id = Input::get('realestate_dropdown');
-        $realestates = Realestate::all();        
+        $realestates = Realestate::getByUser(Auth::user()->id);
         $rentaldetail = Rentaldetail::getByReId($realestate_id);
         $renttier = Renttier::getByReId($realestate_id);
         $mortgage = Mortgage::getByReId($realestate_id);
