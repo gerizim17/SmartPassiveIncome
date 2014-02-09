@@ -23,6 +23,7 @@
 //HOME
 Route::get('/', 'HomeController@showLogin');
 Route::post('login', 'HomeController@handleLogin');
+Route::get('logout', 'HomeController@handleLogout');
 
 //REAL ESTATE//
 
@@ -81,6 +82,7 @@ Route::get('goals', 'GoalsController@index');
 Route::get('users', 'UsersController@index');
 Route::get('users/register', 'UsersController@create');
 Route::post('users/handleRegister', 'UsersController@handleCreate');
+
 
 
 

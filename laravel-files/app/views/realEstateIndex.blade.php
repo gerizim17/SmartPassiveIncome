@@ -40,10 +40,18 @@
                         @endif
                     @endforeach
                     <td>
-                        <a href="{{ action('RealestatesController@edit', $realestate->id) }}" class="btn btn-default">Edit</a>
-                        <a href="{{ action('MontecarloController@index', $realestate->id) }}" class="btn btn-default">Montecarlo</a>
-                        <a href="{{ url('rentalhistory/selectrealestate', $realestate->id) }}" class="btn btn-default">Rental History</a>
-                        <a href="{{ action('RealestatesController@handleDelete', $realestate->id) }}" class="btn btn-danger">Delete</a>                        
+                        <div class="btn-group">
+                          <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+                            menu <span class="caret"></span>
+                          </button>
+                          <ul class="dropdown-menu pull-right" role="menu">                            
+                            <li><a href="{{ action('MontecarloController@index', $realestate->id) }}">Montecarlo</a></li>
+                            <li><a href="{{ url('rentalhistory/selectrealestate', $realestate->id) }}">Rental History</a></li>
+                            <li class="divider"></li>
+                            <li><a href="{{ action('RealestatesController@edit', $realestate->id) }}"><span class="glyphicon glyphicon-pencil"></span> Edit</a></li>
+                            <li><a href="{{ action('RealestatesController@handleDelete', $realestate->id) }}"><span class="glyphicon glyphicon-trash"></span> Delete</a></li>                            
+                          </ul>
+                        </div>
                     </td>
                 </tr>
                 @endforeach

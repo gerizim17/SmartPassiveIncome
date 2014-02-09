@@ -17,24 +17,29 @@
 </head>
 <body>    
     <div class="container">        
-        <nav class="navbar navbar-default" role="navigation" >
+        <nav class="navbar navbar-default navbar-fixed-top" role="navigation" >
             <div class="navbar-header">
-              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
-                <span class="sr-only">Toggle navigation</span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>                
-              </button>
+             @if(Auth::check())
+                  <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>                
+                  </button>
+              @endif
               <a class="navbar-brand" href="{{ action('RealestatesController@index') }}">Smart Passive Income</a>
             </div>
 
             <div class="collapse navbar-collapse">
-              <ul class="nav navbar-nav">
-                <li><a href="{{ action('RealestatesController@index') }}" class="navbar-brand">Real Estate</a></li>
-                <li><a href="{{ action('MontecarloController@index', @$realestate_id) }}" class="navbar-brand">Montecarlo</a></li>
-                <li><a href="{{ url('rentalhistory/selectrealestate', @$realestate_id) }}" class="navbar-brand">Rental History</a></li>                
-                <li><a href="{{ action('GoalsController@index') }}" class="navbar-brand">Goals</a></li>
-              </ul>
+              @if(Auth::check())
+                  <ul class="nav navbar-nav">
+                    <li><a href="{{ action('RealestatesController@index') }}" class="navbar-brand">Real Estate</a></li>
+                    <li><a href="{{ action('MontecarloController@index', @$realestate_id) }}" class="navbar-brand">Montecarlo</a></li>
+                    <li><a href="{{ url('rentalhistory/selectrealestate', @$realestate_id) }}" class="navbar-brand">Rental History</a></li>                
+                    <li><a href="{{ action('GoalsController@index') }}" class="navbar-brand">Goals</a></li>
+                    <li><a href="{{ action('HomeController@handleLogout') }}" class="navbar-brand">Log Out</a></li>
+                  </ul>
+              @endif
             </div><!--/.nav-collapse -->            
         </nav> 
         

@@ -22,4 +22,11 @@ class HomeController extends BaseController
                 ->withInput();
         }
     }
+
+    public function handleLogout()
+    {
+        error_log("handleLogout");
+        Auth::logout();
+        return Redirect::to('/')->with('message_success', 'Your are now logged out!');
+    }
 }
