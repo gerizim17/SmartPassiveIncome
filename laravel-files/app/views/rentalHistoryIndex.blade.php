@@ -38,7 +38,7 @@
          @if ($rentalhistories->isEmpty())
             <p>There is no rental history! :(</p>
         @else
-            <table class="table table-striped table-responsive">
+            <table class="table table-responsive table-hover">
                 <thead>
                     <tr>
                         <th>{{ trans('general.date') }}</th>
@@ -68,8 +68,17 @@
                         <td>{{ $rentalhistory->insurance }}</td>
                         <td>{{ $rentalhistory->mortgage }}</td>
                         <td>{{ $rentalhistory->property_management }}</td>                    
-                        <td><a href="{{ action('RentalhistoryController@create', array($realestate_id, $rentalhistory->id)) }}" class="btn btn-default">Edit</a></td>
-                        <td><a href="{{ action('RentalhistoryController@handleDelete', $rentalhistory->id) }}" class="btn btn-danger">Delete</a></td>
+                        <td>
+                            <div class="btn-group">
+                              <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+                                <span class="glyphicon glyphicon-th-list"></span>
+                              </button>
+                              <ul class="dropdown-menu pull-right" role="menu">                            
+                                <li><a href="{{ action('RentalhistoryController@create', array($realestate_id, $rentalhistory->id)) }}"><span class="glyphicon glyphicon-pencil"></span> Edit</a></li>
+                                <li><a href="{{ action('RentalhistoryController@handleDelete', $rentalhistory->id) }}"><span class="glyphicon glyphicon-trash"></span> Delete</a></li>
+                              </ul>
+                            </div>
+                        </td>
                     </tr>
                     @endforeach
                     <tr>
@@ -85,7 +94,7 @@
                         <td>{{ $average_mortgage }}</td>
                         <td>{{ $average_property_management }}</td>                        
                     </tr>
-                    <tr>
+                    <tr class="success">
                         <td>{{ trans('general.totals') }}:</td>
                         <td></td>
                         <td><strong>${{ number_format($total_cashflow) }}</strong></td>
