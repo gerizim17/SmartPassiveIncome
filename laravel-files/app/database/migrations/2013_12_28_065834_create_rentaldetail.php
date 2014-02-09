@@ -14,6 +14,7 @@ class CreateRentaldetail extends Migration {
 		Schema::create('realestate', function($table)
 		{
 			$table->increments('id');
+			$table->foreign('user_id')->references('id')->on('users');
 	        $table->string('address1', 128);
 	        $table->string('address2', 128)->nullable();
 	        $table->string('city', 128)->nullable();
