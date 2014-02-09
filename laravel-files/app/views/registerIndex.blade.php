@@ -26,7 +26,7 @@
             <input type="password" class="form-control" name="password_confirmation" value="{{ Input::old('password_confirmation') }}" />
         </div>
 
-        <input type="submit" value="Login" class="btn btn-primary" /> 
+        <input type="submit" value="Create Account" class="btn btn-primary" /> 
     </form>
 
 @stop
