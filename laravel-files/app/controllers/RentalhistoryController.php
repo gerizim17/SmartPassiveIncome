@@ -187,7 +187,7 @@ class RentalhistoryController extends BaseController
             "general.propertymanagement" => $total_property_management
         ); 
 
-        return View::make('rentalhistoryIndex')            
+        return View::make('rentalHistoryIndex')            
             ->with($realestates)           
             ->with($rentalhistories)
             ->with($estimate)

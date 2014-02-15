@@ -1,8 +1,15 @@
 @extends('layouts.layout')
 
 @section('content')
-    <h1>{{ trans('general.goals') }}<small> {{ trans('general.goalstext') }}</small></h1>
-    {{ trans('instructions.goals') }}
+	<div class="page-header">
+    	<h1>{{ trans('general.goals') }}<small> {{ trans('general.goalstext') }}</small></h1>
+    </div>
+
+    <div class="page-header">
+	    {{ trans('instructions.goals') }}
+	    <br />
+    </div>
+
     {{ Flowchart::drawGoalsCharts("goals_chart_div") }}
 
    

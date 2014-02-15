@@ -26,7 +26,7 @@ return array(
 	|
 	*/
 
-	'url' => 'http://localhost',
+	'url' => 'http://www.smartpassiveincome.dev',
 
 	/*
 	|--------------------------------------------------------------------------
@@ -65,7 +65,7 @@ return array(
 	|
 	*/
 
-	'key' => 'YourSecretKey!!!',
+	'key' => 'Wm7g3aL8vBc5ihRuBeZ84GOUnkYidBOF',
 
 	/*
 	|--------------------------------------------------------------------------

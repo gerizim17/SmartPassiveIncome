@@ -17,7 +17,7 @@ return array(
 
 	"rentalhistory" => "<p>This page is a bookeeping tool to keep track of revenue and expenses throughout time.</p><p>Click on <strong>Create Rental History</strong> to get started.</p>",
 
-	"montecarloestimate" => "<p>Fill the fields below to see a estimate for the performance of your property.</p>",
+	"montecarloestimate" => "<p>Fill the fields below to see an estimate for the performance of your property.</p>",
 
 	"sent" => "Password reminder sent!",
 

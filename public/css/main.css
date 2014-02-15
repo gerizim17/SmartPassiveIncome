@@ -1,6 +1,13 @@
 .form-signup, .form-signin {
-    width: 300px;
+    width: 390px;
     margin: 0 auto;
 }
 
-body { padding-top: 45px; }
+body { 
+	/*padding-top: 45px; 
+	background:  url('maze.png');*/
+}
+
+.navbar{
+	margin-bottom: 0px;
+}

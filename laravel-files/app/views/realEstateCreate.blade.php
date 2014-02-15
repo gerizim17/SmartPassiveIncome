@@ -6,7 +6,7 @@
     </div>
 
     <form action="{{ action('RealestatesController@handleCreate') }}" method="post" role="form">
-        <input type="hidden" name="realestate_id" value="{{ $realestate->id }}">
+        <input type="hidden" name="realestate_id" value="{{ @$realestate->id }}">
 
         <div class="form-group">
             <label for="address1">Address 1</label>

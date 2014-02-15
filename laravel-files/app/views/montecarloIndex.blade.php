@@ -1,12 +1,16 @@
 @extends('layouts.layout')
 
 @section('content')
-    <h1>Montecarlo Estimates!</h1>
-    @if ($realestates->isEmpty())        
-        <p>There are no real estate! :(</p>
-    @else        
+    <div class="page-header">
+        <h1>Montecarlo Estimates!</h1>            
+    </div>
     
-    {{ trans('instructions.montecarloestimate') }}
+   @if (isset($realestate_id) && !isset($renttier))
+        <div class="page-header">
+            {{ trans('instructions.montecarloestimate') }}
+            <br />
+        </div>
+    @endif
 
     @if (isset($realestate_id) && isset($renttier))
         {{ Flowchart::drawColumnChart($realestate_id, "bar_div") }}
@@ -21,7 +25,7 @@
         @endforeach
         </select> 
     </form> 
-    @endif
+    
     <br />
     <div class="form-group row">
         <div class="col-sm-6" id="pie_div"></div>

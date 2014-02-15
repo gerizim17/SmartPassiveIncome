@@ -54,10 +54,10 @@ return array(
 
 		'mysql' => array(
 			'driver'    => 'mysql',
-			'host'      => '127.0.0.1',
-			'database'  => 'smartpassiveincome',
-			'username'  => 'root',
-			'password'  => '',
+			'host'      => 'localhost',
+			'database'  => 'webuyhom_passiveincome',
+			'username'  => 'webuyhom_spi',
+			'password'  => 'smartpassiveincome123',
 			'charset'   => 'utf8',
 			'collation' => 'utf8_unicode_ci',
 			'prefix'    => '',

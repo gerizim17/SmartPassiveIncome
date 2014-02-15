@@ -15,7 +15,7 @@ class RealestatesController extends BaseController
         $realestates = compact('realestates');
         $mortgages = compact('mortgages');
 
-        return View::make('realestateIndex')
+        return View::make('realEstateIndex')
             ->with($realestates)
             ->with($mortgages);
     }
@@ -37,6 +37,7 @@ class RealestatesController extends BaseController
         $realestate->city = Input::get('city');
         $realestate->state = Input::get('state');
         $realestate->zip  = Input::get('zip');
+        $realestate->user_id  = Auth::user()->id;
         $realestate->save();
         
         $mortgage->realestate_id = $realestate->id;
@@ -75,7 +76,7 @@ class RealestatesController extends BaseController
         $realestate->address2 = Input::get('address2');
         $realestate->city = Input::get('city');
         $realestate->state = Input::get('state');
-        $realestate->zip  = Input::get('zip');    
+        $realestate->zip  = Input::get('zip'); 
 
         $realestate->save();
         error_log("sale_price: ".Input::get('sale_price'));

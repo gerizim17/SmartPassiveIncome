@@ -4,7 +4,12 @@
     <div class="page-header">
         <h1>All Real Estate <small>Trading time for dollars is the biggest barrier!</small></h1>
     </div>
-    {{ trans('instructions.rentalhistory') }}
+   @if (!isset($realestate_id))
+        <div class="page-header">
+            {{ trans('instructions.rentalhistory') }}
+            <br />
+        </div>
+    @endif
     <form name="dropDownForm" id="dropDownForm" action="{{ url('rentalhistory/selectrealestate') }}" method="post" role="form">
     <div class="form-group">        
         <select class="form-control" name="realestate_dropdown" onchange="$('#dropDownForm').submit();">
@@ -28,7 +33,7 @@
         <div class="panel panel-default">
             <div class="panel-body">                
                 <div>
-                    from:&nbsp;<input name="start_date" size="10" value="{{ isset($start_date)?$start_date:'01/'.date('Y') }}" />&nbsp;&nbsp;to:&nbsp;<input name="end_date" size="10" value="{{ isset($end_date)?$end_date:'12/'.date('Y') }}" />
+                    from:&nbsp;<input id="datepicker_from" name="start_date" size="10" value="{{ isset($start_date)?$start_date:'01/'.date('Y') }}" />&nbsp;&nbsp;to:&nbsp;<input id="datepicker_to" name="end_date" size="10" value="{{ isset($end_date)?$end_date:'12/'.date('Y') }}" />
                     <a href="#" onclick="$('#dropDownForm').submit();" class="btn btn-default">Submit</a>                      
                 </div>                
             </div>
@@ -51,7 +56,7 @@
                         <th>{{ trans('general.tax') }}</th>
                         <th>{{ trans('general.insurance') }}</th>
                         <th>{{ trans('general.mortgage') }}</th>
-                        <th>{{ trans('general.propertymanagement') }}</th>                    
+                        <th>{{ trans('general.propertymanagement') }}</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -118,5 +123,24 @@
             </div>            
             @endif
     @endif
+    </form>
 @stop
-</form>
+
+@section('javascript')
+    @parent
+    var currentYear = new Date().getFullYear();
+    var nextYear = currentYear + 1;
+    console.log("currentYear: "+currentYear);
+    console.log("currentYear: "+nextYear);
+
+    options = {        
+        selectedYear: currentYear,
+        startYear: 2008,
+        finalYear: nextYear,        
+    };
+
+    $(function() {
+        $( "#datepicker_from" ).monthpicker(options);
+        $( "#datepicker_to" ).datepicker();
+    });
+@stop
