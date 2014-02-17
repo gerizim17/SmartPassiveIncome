@@ -58,23 +58,23 @@ class Accounting {
 				</tr>
 
 				<tr class="active">
-					<?php if($title!="Monthly Income Statement" && $title!="Averaged Income Statement"){ ?>
+					<?php if($title!="Monthly Income Statement" && $title!="Avg. Income Statement"){ ?>
 						<td><?php echo trans("general.caprate");?></td>					
 						<td align="right"><?php echo SmartPassiveIncome::percent(((($effective_gross_income - $total_operating_expenses)) / $price)*100);?></td>
 					<?php } else { echo "<td>&nbsp;</td><td>&nbsp;</td>";} ?>
 				</tr>
 				<tr class="active">
-					<?php if($title!="Monthly Income Statement" && $title!="Averaged Income Statement"){ ?>
+					<?php if($title!="Monthly Income Statement" && $title!="Avg. Income Statement"){ ?>
 						<td><?php echo trans("general.grm");?></td>
 						<td align="right"><?php echo SmartPassiveIncome::percent($price / ($gross_potential_income));?></td>
 						<?php } else { echo "<td>&nbsp;</td><td>&nbsp;</td>";} ?>
 				</tr>
 				<?php 
 					$cashoncash = ((($effective_gross_income - $total_operating_expenses - $debt_service)) / $roi->init_investment)*100;
-					if($title=="Monthly Income Statement" || $title=="Averaged Income Statement") {$cashoncash *= 12;}
+					if($title=="Monthly Income Statement" || $title=="Avg. Income Statement") {$cashoncash *= 12;}
 				?>
 				<tr class="active">
-					<td><?php echo ($title!="Monthly Income Statement" && $title!="Averaged Income Statement")?trans("general.cashoncash"):trans("general.projectedcashoncash");?></td>
+					<td><?php echo ($title!="Monthly Income Statement" && $title!="Avg. Income Statement")?trans("general.cashoncash"):trans("general.projectedcashoncash");?></td>
 					<td align="right"><?php echo SmartPassiveIncome::percent($cashoncash);?></td>
 				</tr>
 
