@@ -24,17 +24,19 @@
         {{ urldecode($message) }}
     @endif
 
-    @if (isset($realestate_id))  
+    @if (isset($realestate_id))
         <div class="panel panel-default">
-            <div class="panel-body">                
-                <a href="{{ action('RentalhistoryController@create', $realestate_id) }}" class="btn btn-primary">Create Rental History</a>                    
+            <div class="panel-body">
+                <a href="{{ action('RentalhistoryController@create', $realestate_id) }}" class="btn btn-primary">Create Rental History</a>
             </div>
         </div>
         <div class="panel panel-default">
-            <div class="panel-body">                
+            <div class="panel-body">
                 <div>
                     from:&nbsp;<input id="datepicker_from" name="start_date" size="10" value="{{ isset($start_date)?$start_date:'01/'.date('Y') }}" />&nbsp;&nbsp;to:&nbsp;<input id="datepicker_to" name="end_date" size="10" value="{{ isset($end_date)?$end_date:'12/'.date('Y') }}" />
-                    <a href="#" onclick="$('#dropDownForm').submit();" class="btn btn-default">Submit</a>                      
+                    <a href="#" onclick="$('#dropDownForm').submit();" class="btn btn-default">Submit</a>
+                    <a href="#" onclick="$('#datepicker_from').val('{{ date('m/Y'); }}'); $('#datepicker_to').val('{{ date('m/Y'); }}'); $('#dropDownForm').submit();" class="btn btn-default">Show This Month</a>
+                    <a href="#" onclick="$('#datepicker_from').val('{{ date('01/Y'); }}'); $('#datepicker_to').val('{{ date('12/Y'); }}'); $('#dropDownForm').submit();" class="btn btn-default">Show This Year</a>
                 </div>                
             </div>
         </div>
@@ -118,8 +120,8 @@
             </table>          
             @if (!$rentalhistories->isEmpty())  
              <div class="form-group row">
-                <div class="col-sm-5">{{ Accounting::createIncomeStatement($realestate_id, $ary_account_income, $ary_account_expenses, $average_mortgage, "Averaged Income Statement") }} </div>
-                <div class="col-sm-5">{{ Accounting::createIncomeStatement($realestate_id, $ary_annual_account_income, $ary_annual_account_expenses, $debt_service, "Yearly Income Statement") }} </div>
+                <div class="col-sm-6">{{ Accounting::createIncomeStatement($realestate_id, $ary_account_income, $ary_account_expenses, $average_mortgage, "Avg. Income Statement") }} </div>
+                <div class="col-sm-6">{{ Accounting::createIncomeStatement($realestate_id, $ary_annual_account_income, $ary_annual_account_expenses, $debt_service, "Yearly Income Statement") }} </div>
             </div>            
             @endif
     @endif
@@ -127,20 +129,23 @@
 @stop
 
 @section('javascript')
-    @parent
-    var currentYear = new Date().getFullYear();
-    var nextYear = currentYear + 1;
-    console.log("currentYear: "+currentYear);
-    console.log("currentYear: "+nextYear);
+    @parent   
 
     options = {        
-        selectedYear: currentYear,
-        startYear: 2008,
-        finalYear: nextYear,        
+        viewMode: 'months',
+        format: 'mm/yyyy',
+        minViewMode: 'months',
+
     };
 
     $(function() {
-        $( "#datepicker_from" ).monthpicker(options);
-        $( "#datepicker_to" ).datepicker();
+        var from_date = $( "#datepicker_from" ).datepicker(options) .on('changeDate', function(ev){
+                from_date.datepicker('hide');
+            });
+        var to_date = $( "#datepicker_to" ).datepicker(options) .on('changeDate', function(ev){
+                to_date.datepicker('hide');
+            });       
     });
+
+  
 @stop

@@ -6,12 +6,12 @@
     <link rel="stylesheet" href="{{ asset('bootstrap/css/bootstrap.min.css') }}" />    
     <link rel="stylesheet" href="{{ asset('bootstrap/css/bootstrap-theme.min.css') }}" />
     <link rel="stylesheet" href="{{ asset('bootstrap/css/bootstrap-switch.min.css') }}" />
-    <link rel="stylesheet" href="//ajax.googleapis.com/ajax/libs/jqueryui/1.10.4/themes/smoothness/jquery-ui.css" />    
+    <link rel="stylesheet" href="{{ asset('css/datepicker.css') }}" />
     <link rel="stylesheet" href="{{ asset('/css/main.css') }}" />
      <script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
      <script src="//ajax.googleapis.com/ajax/libs/jqueryui/1.10.4/jquery-ui.min.js"></script>
     <!-- <script src="{{ asset('js/jquery-1.10.2.min.js') }}"></script> -->
-    <script src="{{ asset('js/monthpicker.js') }}"></script>
+    <script src="{{ asset('js/bootstrap-datepicker.js') }}"></script>
     <script src="{{ asset('bootstrap/js/bootstrap.min.js') }}"></script>
     <script src="{{ asset('bootstrap/js/bootstrap-switch.min.js') }}"></script>    
     <script src="http://code.highcharts.com/highcharts.js"></script>
