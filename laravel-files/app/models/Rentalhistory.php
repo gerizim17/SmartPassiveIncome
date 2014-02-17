@@ -11,6 +11,7 @@ class Rentalhistory extends Eloquent
 	public static function getByReIdBetweenDates($id, $start_date, $end_date){
 		return Rentalhistory::whereRealestateId($id)
 			->whereBetween('date', array($start_date, $end_date))
+			->orderBy('date', 'DESC')
 			->get();		
 	}
 
