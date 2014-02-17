@@ -152,7 +152,8 @@ class RentalhistoryController extends BaseController
         $estimate = compact('estimate');
         $rentalhistories = compact('rentalhistories');
 
-        $vacancy_percent = number_format(100-($average_rent/$renttier->rent)*100)."%";
+        $vacancy_percent = number_format(100-(SmartPassiveIncome::cleanNumber($average_rent)/SmartPassiveIncome::cleanNumber($renttier->rent))*100)."%";
+        
         $ary_account_income = array(
             trans("general.gpi") => $renttier->rent,
             trans("general.vac", array("vacancy" => $vacancy_percent)) => ($renttier->rent - $total_rent/$count),
