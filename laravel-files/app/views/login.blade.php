@@ -5,7 +5,7 @@
 
     <div class="form-signup">
         <div class="page-header text-center">
-            <h2><span class="text-primary">Smart Passive Income</span><br /><small>Of what use is money in the hand of a fool, since he has no desire to get wisdom...</small></h2>            
+            <h2><span class="text-info">Smart Passive Income</span><br /><small>Of what use is money in the hand of a fool, since he has no desire to get wisdom...</small></h2>            
         </div>
         <div class="well well-lg">
             <form action="{{ action('HomeController@handleLogin') }}" method="post" role="form">
