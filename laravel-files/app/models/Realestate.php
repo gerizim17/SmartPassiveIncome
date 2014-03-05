@@ -5,7 +5,7 @@ class Realestate extends BaseModel {
 	public $table = 'realestate';
 
 	public static $rules = array(
-       	'address1' => 'Required',
+      'address1' => 'Required',
    		'city'     => 'Required',
   	);
 
