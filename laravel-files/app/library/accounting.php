@@ -52,7 +52,7 @@ class Accounting {
 					<td align="right"><?php echo SmartPassiveIncome::money($debt_service, false);?></td>
 				</tr>
 				
-				<tr class="success">
+				<tr class="<?php echo ($effective_gross_income - $total_operating_expenses - $debt_service > 0)?'success':'danger' ?>">
 					<td>Before-Tax Casfh Flow</td>
 					<td align="right"><?php echo SmartPassiveIncome::money($effective_gross_income - $total_operating_expenses - $debt_service, false);?></td>
 				</tr>
