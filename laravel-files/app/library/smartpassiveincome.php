@@ -167,7 +167,7 @@ class SmartPassiveIncome {
 		
 		// Total principal, interest, pmi, taxes, fees
 		$mortgageMonthlyPayment = $monthlyPayment + $pmiPerMonth; //+ $property_monthly_tax + $condo_fee;
-		$mortgageMonthlyPayment = SmartPassiveIncome::money($mortgageMonthlyPayment, true, false);		
+		$mortgageMonthlyPayment = $mortgageMonthlyPayment;		
 
 		return $mortgageMonthlyPayment;
 
