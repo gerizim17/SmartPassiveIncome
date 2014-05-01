@@ -12,9 +12,9 @@
         </div>
     @endif
 
-    @if (isset($realestate_id) && isset($renttier))
-        {{ Flowchart::drawColumnChart($realestate_id, "bar_div") }}
+    @if (isset($realestate_id) && isset($renttier))        
         {{ Flowchart::drawPieChart($realestate_id, "pie_div") }}
+        {{ Flowchart::drawColumnChart($realestate_id, "bar_div") }}
 
         {{ Flowchart::drawPieChart($realestate_id, "pie_div_best", "best") }}
         {{ Flowchart::drawColumnChart($realestate_id, "bar_div_best", "best") }}
@@ -85,6 +85,11 @@
         <a class="carousel-control left" href="#this-carousel-id" data-slide="prev"><span class="glyphicon glyphicon-chevron-left"></span></a>
         <a class="carousel-control right" href="#this-carousel-id" data-slide="next"><span class="glyphicon glyphicon-chevron-right"></span></a>
     </div>
+
+    <div>
+        Risk Assessment: {{ $estimate->risk }}% chance of losing money on any given year.
+    </div>
+
     @endif
 
     <div id="montecarloForm" {{ isset($realestate_id)?"":'style="display:none"' }}>

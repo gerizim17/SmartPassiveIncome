@@ -152,7 +152,7 @@ class Flowchart {
 		         	 // set up the two data series
                 	//echo "total_returned = [];";
                 	//echo "total_investment_left = [];";
-                	error_log("estcash: ".$estimate->cashflow);
+                	//error_log("estcash: ".$estimate->cashflow);
 					if($estimate->cashflow > 0){						
 			         	while($total_income <= $init_investment){
 			         		$total_income += $medianYearlyIncome;

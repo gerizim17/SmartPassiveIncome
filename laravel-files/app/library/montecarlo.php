@@ -223,8 +223,8 @@ class Montecarlo {
 			//error_log("income2: ".$yearlyIncome2);
 		}
 
-		//error_log("payment: ".$losingMoneyScenarios);		
-		//error_log("payment2: ".$losingMoneyScenarios2);		
+		error_log("losingMoneyScenarios: ".$losingMoneyScenarios);		
+		error_log("losingMoneyScenarios2: ".$losingMoneyScenarios2);		
 
 		//expenses
 		$medianYearlyRent = SmartPassiveIncome::calculateMedian($ary_yearlyRent);		
@@ -259,7 +259,7 @@ class Montecarlo {
 		$lowestYearlyIncomeAlternate = $lowestYearlyRent - $lowestYearlyPM - $lowestYearlyRepairs - $yearlyFixedExpenses - $mortgage->monthly_payment2*12; 
 
 		//error_log("medianYearlyIncomeAlternate: ".$medianYearlyIncomeAlternate);
-		//error_log("lowestYearlyIncome2: ".$lowestYearlyIncomeAlternate);
+		// error_log("lowestYearlyIncome2: ".$lowestYearlyIncomeAlternate);
 
 		//roi
 		//if(strlen($mortgage->sale_price) > 0 && strlen($returnoninvestment->down_payment) < 0){
@@ -281,7 +281,7 @@ class Montecarlo {
 
 		//risk assesment
 		$losingMoneyChance = ($losingMoneyScenarios/$total_scenarios)*100;
-		$losingMoneyChance2 = ($losingMoneyScenarios2/$total_scenarios)*100;
+		$losingMoneyChance2 = ($losingMoneyScenarios2/$total_scenarios)*100;		
 		
 		//misc calculations PMI
 		if($mortgage->percent_down > 20){
