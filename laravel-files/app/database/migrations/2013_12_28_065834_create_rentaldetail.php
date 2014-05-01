@@ -132,6 +132,42 @@ class CreateRentaldetail extends Migration {
 			$table->decimal('cashflow2');
 			$table->decimal('fixed_expenses2');			
 			$table->decimal('roi2');
+			$table->decimal('risk');
+			$table->decimal('risk2');
+	        $table->timestamps();
+		});
+
+		Schema::create('estimatebest', function($table)
+		{
+			$table->increments('id');
+	        $table->integer('realestate_id')->unsigned();
+	        $table->foreign('realestate_id')->references('id')->on('realestate');
+	        $table->decimal('rent');
+	        $table->decimal('repairs');
+	        $table->decimal('cashflow');        
+	        $table->decimal('variable_expenses');
+			$table->decimal('fixed_expenses');			
+			$table->decimal('roi');
+			$table->decimal('cashflow2');
+			$table->decimal('fixed_expenses2');			
+			$table->decimal('roi2');
+	        $table->timestamps();
+		});
+
+		Schema::create('estimateworst', function($table)
+		{
+			$table->increments('id');
+	        $table->integer('realestate_id')->unsigned();
+	        $table->foreign('realestate_id')->references('id')->on('realestate');
+	        $table->decimal('rent');
+	        $table->decimal('repairs');
+	        $table->decimal('cashflow');        
+	        $table->decimal('variable_expenses');
+			$table->decimal('fixed_expenses');			
+			$table->decimal('roi');
+			$table->decimal('cashflow2');
+			$table->decimal('fixed_expenses2');			
+			$table->decimal('roi2');
 	        $table->timestamps();
 		});
 	}
