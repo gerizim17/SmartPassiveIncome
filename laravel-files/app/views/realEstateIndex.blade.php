@@ -44,7 +44,7 @@
                           <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
                             menu <span class="caret"></span>
                           </button>
-                          <ul class="dropdown-menu pull-right" role="menu">                            
+                          <ul class="dropdown-menu dropdown-menu-right dropup" role="menu">                            
                             <li><a href="{{ action('MontecarloController@index', $realestate->id) }}">Montecarlo</a></li>
                             <li><a href="{{ url('rentalhistory/selectrealestate', $realestate->id) }}">Rental History</a></li>
                             <li class="divider"></li>

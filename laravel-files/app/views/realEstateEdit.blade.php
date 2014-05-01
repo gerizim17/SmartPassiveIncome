@@ -2,7 +2,7 @@
 
 @section('content')
     <div class="page-header">
-        <h1>Edit Real Estate <small>Hiya buddy!</small></h1>
+        <h1>Edit Real Estate</h1>
     </div>
 
     <form action="{{ action('RealestatesController@handleEdit') }}" method="post" role="form">

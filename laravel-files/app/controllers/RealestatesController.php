@@ -32,6 +32,18 @@ class RealestatesController extends BaseController
         $realestate = new Realestate;
         $mortgage = new Mortgage;
 
+        $validator = Realestate::validate(Input::all());
+        $validator2 = Mortgage::validate(Input::all());
+        if($validator->fails() || $validator2->fails()){
+            return Redirect::action('RealestatesController@create')->withInput()
+                ->withErrors(array_merge_recursive(
+                    $validator->messages()->toArray(), 
+                    $validator2->messages()->toArray()
+                ));
+        }
+        
+        //error_log("validators: ".$validator->messages()->first());
+
         $realestate->address1 = Input::get('address1');
         $realestate->address2 = Input::get('address2');
         $realestate->city = Input::get('city');
@@ -79,8 +91,6 @@ class RealestatesController extends BaseController
         $realestate->zip  = Input::get('zip'); 
 
         $realestate->save();
-        error_log("sale_price: ".Input::get('sale_price'));
-        error_log("realestate_id: ".Input::get('realestate_id'));
         $mortgage = Mortgage::getByReId(Input::get('realestate_id'));
         $mortgage->sale_price = Input::get('sale_price');        
         $mortgage->save();
