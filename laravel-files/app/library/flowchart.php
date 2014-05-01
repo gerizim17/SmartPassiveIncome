@@ -2,8 +2,14 @@
 
 class Flowchart {
 
-	public static function drawPieChart($realestate_id, $container_id) {
-		$estimate = Estimate::getByReId($realestate_id);
+	public static function drawPieChart($realestate_id, $container_id, $mode = "") {		
+		if($mode == "best"){
+			$estimate = Estimatebest::getByReId($realestate_id);		
+		} else if($mode == "worst"){
+			$estimate = Estimateworst::getByReId($realestate_id);		
+		} else {
+			$estimate = Estimate::getByReId($realestate_id);		
+		}
 		$fixedexpenses = Fixedexpense::getByReId($realestate_id);
 		$mortgage = Mortgage::getByReId($realestate_id);		
 		?>		
@@ -82,8 +88,14 @@ class Flowchart {
 	<?php
 	}
 
-	public static function drawColumnChart($realestate_id, $container_id) {
-		$estimate = Estimate::getByReId($realestate_id);
+	public static function drawColumnChart($realestate_id, $container_id, $mode = "") {
+		if($mode == "best"){
+			$estimate = Estimatebest::getByReId($realestate_id);		
+		} else if($mode == "worst"){
+			$estimate = Estimateworst::getByReId($realestate_id);		
+		} else {
+			$estimate = Estimate::getByReId($realestate_id);		
+		}
 		$fixedexpenses = Fixedexpense::getByReId($realestate_id);
 		$mortgage = Mortgage::getByReId($realestate_id);
 		$roi = Returnoninvestment::getByReId($realestate_id);

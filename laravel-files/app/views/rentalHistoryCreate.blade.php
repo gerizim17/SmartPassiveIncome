@@ -19,23 +19,23 @@
         <input type="hidden" name="rentalhistory_id" value="{{ $rentalhistory_id }}">
         <div class="form-group">
             <label for="date">Date</label>
-            <input type="text" class="form-control" name="date" value="{{ SmartPassiveIncome::dateToMonthYear($rentalhistory->date) }}" />
+            <input type="text" class="form-control" name="date" value="{{ SmartPassiveIncome::dateToMonthYear(@$rentalhistory->date) }}" />
         </div>
         <div class="form-group">
             <label for="rent">Gross Rent</label>
-            <input type="text" class="form-control" name="rent" value="{{ $rentalhistory->rent }}" />
+            <input type="text" class="form-control" name="rent" value="{{ @$rentalhistory->rent }}" />
         </div>
          <div class="form-group">
             <label for="repairs">Repairs</label>
-            <input type="text" class="form-control" name="repairs" value="{{ $rentalhistory->repairs }}" />
+            <input type="text" class="form-control" name="repairs" value="{{ @$rentalhistory->repairs }}" />
         </div>
          <div class="form-group">
             <label for="water">Water</label>
-            <input type="text" class="form-control" name="water" value="{{ $rentalhistory->water }}" />
+            <input type="text" class="form-control" name="water" value="{{ @$rentalhistory->water }}" />
         </div>
          <div class="form-group">
             <label for="electricity">Electricity</label>
-            <input type="text" class="form-control" name="electricity" value="{{ $rentalhistory->electricity }}" />
+            <input type="text" class="form-control" name="electricity" value="{{ @$rentalhistory->electricity }}" />
         </div>   
         <div class="form-group">
             <label for="tax">Tax</label>

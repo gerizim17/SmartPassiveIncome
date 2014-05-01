@@ -11,3 +11,34 @@ body {
 .navbar{
 	margin-bottom: 0px;
 }
+
+span.required_field{
+	color: red;
+	font-size: 16px;
+}
+
+.dropup{
+	bottom: 100%;
+	top: auto;
+}
+
+ div.montecarlo_carousel {      
+      overflow:hidden;
+      display:block;
+      /*border:1px solid red;*/
+      margin-left: 40px;
+      margin-right: 50px;
+}
+    
+.carousel-control.left, .carousel-control.right {
+    background-image: none;
+    background-repeat: inherit;
+    bottom: auto;
+    color: black;
+    top: 34px;    
+}
+
+.carousel-control{
+       width: 3%;
+
+}

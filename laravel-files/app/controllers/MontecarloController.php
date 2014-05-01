@@ -1,4 +1,4 @@
-<?php
+  <?php
 
 // app/controllers/ArticleController.php
 
@@ -21,49 +21,17 @@ class MontecarloController extends BaseController
             $fixedexpense = Fixedexpense::getByReId($realestate_id); 
             $roi = Returnoninvestment::getByReId($realestate_id);                    
             $estimate = Estimate::getByReId($realestate_id);
+            $estimatebest = Estimatebest::getByReId($realestate_id);
+            $estimateworst = Estimateworst::getByReId($realestate_id);
 
-            if(isset($estimate)){
-                $vacancy_percent = number_format(100-($estimate->rent/$renttier->rent)*100)."%";
-                $ary_account_income = array(
-                    trans("general.gpi") => $renttier->rent,
-                    trans("general.vac", array("vacancy" => $vacancy_percent)) => ($renttier->rent - $estimate->rent),
-                    trans("general.egi") => $estimate->rent,
-                    trans("general.oi") => 0,
-                    trans("general.goi") => $estimate->rent
-                );
-
-                $ary_account_expenses = array(
-                    "general.propertytaxes" => $fixedexpense->taxes,
-                    "general.insurance" => $fixedexpense->insurance,
-                    "general.utilities" => $fixedexpense->utilities,
-                    "general.otherexpenses" => $fixedexpense->misc,
-                    "general.repairs" => $estimate->repairs,
-                    "general.propertymanagement" => $estimate->variable_expenses-$estimate->repairs
-                ); 
-
-                $ary_yearly_account_income = array(
-                    trans("general.gpi") => $renttier->rent*12,
-                    trans("general.vac", array("vacancy" => $vacancy_percent)) => (($renttier->rent*12) - ($estimate->rent*12)),
-                    trans("general.egi") => ($estimate->rent*12),
-                    trans("general.oi") => 0,
-                    trans("general.goi") => ($estimate->rent*12)
-                );
-
-                $ary_yearly_account_expenses = array(
-                    "general.propertytaxes" => $fixedexpense->taxes*12,
-                    "general.insurance" => $fixedexpense->insurance*12,
-                    "general.utilities" => $fixedexpense->utilities*12,
-                    "general.otherexpenses" => $fixedexpense->misc*12,
-                    "general.repairs" => $estimate->repairs*12,
-                    "general.propertymanagement" => ($estimate->variable_expenses*12)-($estimate->repairs)*12
-                );  
-            }
             $rentaldetail = compact('rentaldetail');         
             $renttier = compact('renttier');
             $mortgage = compact('mortgage'); 
             $roi = compact('roi');             
             $fixedexpense = compact('fixedexpense');            
             $estimate = compact('estimate');
+            $estimatebest = compact('estimatebest');
+            $estimateworst = compact('estimateworst');
         
             return View::make('montecarloIndex')
                 ->with($realestates)
@@ -73,10 +41,8 @@ class MontecarloController extends BaseController
                 ->with($fixedexpense)
                 ->with($roi)
                 ->with($estimate)
-                ->with('ary_account_income', @$ary_account_income)
-                ->with('ary_account_expenses', @$ary_account_expenses)
-                ->with('ary_yearly_account_income', @$ary_yearly_account_income)
-                ->with('ary_yearly_account_expenses', @$ary_yearly_account_expenses)
+                ->with($estimatebest)
+                ->with($estimateworst)
                 ->with('realestate_id', $realestate_id);
         } else {
             return View::make('montecarloIndex')->with($realestates);
@@ -96,19 +62,14 @@ class MontecarloController extends BaseController
                
     }
 
-    public function calculateEstimate($realestate_id, $scenarios){
-        error_log("estimating montecarlo...");
-        Montecarlo::calculateEstimate($realestate_id, $scenarios);
-        error_log("...estimates finished");
-
+    public function calculateEstimate($realestate_id, $scenarios){        
+        Montecarlo::calculateEstimate($realestate_id, $scenarios);        
         return Redirect::action('MontecarloController@index', $realestate_id);        
     }
 
     public function handlePropertyInfoSave(){
         $realestates = Realestate::getByUser(Auth::user()->id);
         $realestates = compact('realestates');
-
-        error_log("saving property info...");
 
         // Handle edit form submission.  
         $realestate_id = Input::get('realestate_id');        
@@ -126,7 +87,7 @@ class MontecarloController extends BaseController
         $rentaldetail->pm_vacancy_charge = Input::get('pm_vacancy_charge');
         $rentaldetail->save();        
                        
-        $renttier = renttier::getByReId($realestate_id);
+        $renttier = Renttier::getByReId($realestate_id);
         if(!isset($renttier)){ 
             $renttier = new Renttier;
             $renttier->realestate_id = $realestate_id;
@@ -192,8 +153,7 @@ class MontecarloController extends BaseController
         $fixedexpense = compact('fixedexpense');
         $roi = compact('roi');
 
-        error_log("...information saved");
-        return Redirect::action('MontecarloController@calculateEstimate', array($realestate_id, '10000'));
+        return Redirect::action('MontecarloController@calculateEstimate', array($realestate_id, '1000'));
 
     }
 
@@ -206,41 +166,8 @@ class MontecarloController extends BaseController
         $fixedexpense = Fixedexpense::getByReId($realestate_id);
         $roi = Returnoninvestment::getByReId($realestate_id);
         $estimate = Estimate::getByReId($realestate_id);
-
-        $vacancy_percent = number_format(100-($estimate->rent/$renttier->rent)*100)."%";
-        $ary_yearly_account_income = array(
-            trans("general.gpi") => $renttier->rent*12,
-            trans("general.vac", array("vacancy" => $vacancy_percent)) => (($renttier->rent*12) - ($estimate->rent*12)),
-            trans("general.egi") => ($estimate->rent*12),
-            trans("general.oi") => 0,
-            trans("general.goi") => ($estimate->rent*12)
-        );
-
-        $ary_yearly_account_expenses = array(
-            "general.propertytaxes" => $fixedexpense->taxes*12,
-            "general.insurance" => $fixedexpense->insurance*12,
-            "general.utilities" => $fixedexpense->utilities*12,
-            "general.otherexpenses" => $fixedexpense->misc*12,
-            "general.repairs" => $estimate->repairs*12,
-            "general.propertymanagement" => ($estimate->variable_expenses*12)-($estimate->repairs)*12
-        );  
-
-        $ary_account_income = array(
-            trans("general.gpi") => $renttier->rent,
-            trans("general.vac", array("vacancy" => $vacancy_percent)) => ($renttier->rent - $estimate->rent),
-            trans("general.egi") => $estimate->rent,
-            trans("general.oi") => 0,
-            trans("general.goi") => $estimate->rent
-        );
-
-        $ary_account_expenses = array(
-            "general.propertytaxes" => $fixedexpense->taxes,
-            "general.insurance" => $fixedexpense->insurance,
-            "general.utilities" => $fixedexpense->utilities,
-            "general.otherexpenses" => $fixedexpense->misc,
-            "general.repairs" => $estimate->repairs,
-            "general.propertymanagement" => $estimate->variable_expenses-$estimate->repairs
-        );      
+        $estimatebest = Estimatebest::getByReId($realestate_id);
+        $estimateworst = Estimateworst::getByReId($realestate_id);  
 
         $realestates = compact('realestates');
         $rentaldetail = compact('rentaldetail');
@@ -249,6 +176,8 @@ class MontecarloController extends BaseController
         $fixedexpense = compact('fixedexpense');
         $roi = compact('roi');
         $estimate = compact('estimate');
+        $estimatebest = compact('estimatebest');
+        $estimateworst = compact('estimateworst');
 
         return View::make('montecarloIndex')            
             ->with($realestates)
@@ -258,10 +187,8 @@ class MontecarloController extends BaseController
             ->with($fixedexpense)
             ->with($roi)
             ->with($estimate)
-            ->with('ary_account_income', $ary_account_income)
-            ->with('ary_account_expenses', $ary_account_expenses)
-            ->with('ary_yearly_account_income', $ary_yearly_account_income)
-            ->with('ary_yearly_account_expenses', $ary_yearly_account_expenses)            
+            ->with($estimatebest)
+            ->with($estimateworst)     
             ->with('realestate_id', $realestate_id); 
     }
 

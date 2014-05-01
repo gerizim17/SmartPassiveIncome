@@ -124,6 +124,18 @@ class Montecarlo {
         	$estimate = new Estimate;
         	$estimate->realestate_id = $realestate_id;
         }
+
+        $estimatebest = Estimatebest::getByReId($realestate_id);
+        if(!isset($estimatebest)){
+        	$estimatebest = new Estimatebest;
+        	$estimatebest->realestate_id = $realestate_id;
+        }
+
+        $estimateworst = Estimateworst::getByReId($realestate_id);
+        if(!isset($estimateworst)){
+        	$estimateworst = new Estimateworst;
+        	$estimateworst->realestate_id = $realestate_id;
+        }
         // $rentaldetail = compact('rentaldetail');         
         // $renttier = compact('renttier');
         // $mortgage = compact('mortgage'); 
@@ -136,9 +148,10 @@ class Montecarlo {
 		$monthlyFixedExpensesAlternate = $fixedexpense->utilities + $fixedexpense->taxes + $fixedexpense->insurance;
 		$yearlyFixedExpensesAlternate = $monthlyFixedExpensesAlternate*12;
 
-		$yearlyFixedExpensesDifference =  $yearlyFixedExpenses - $yearlyFixedExpensesAlternate;
-	
+		//$yearlyFixedExpensesDifference =  $yearlyFixedExpenses - $yearlyFixedExpensesAlternate;
+
 		$losingMoneyScenarios = 0;
+		$losingMoneyScenarios2 = 0;
 
 		//Run the scenarios		
 		for($i = 0; $i < $total_scenarios; $i++){
@@ -167,7 +180,7 @@ class Montecarlo {
 			$yearlyVacantExpense = 0;
 			//for($t = 0; $t <= count($monthsRented)-1; $t++){
 
-				$yearlyVacantExpense += (12 - $monthsRented) * $rentaldetail->pm_vacancy_charge;
+			$yearlyVacantExpense += (12 - $monthsRented) * $rentaldetail->pm_vacancy_charge;
 			//}			
 			$yearly_pm_monthly_charge = ($rentaldetail->pm_monthly_charge/100) * $yearlyRent;					
 			$yearlyPropertyManagementExpense = $yearly_pm_monthly_charge + $yearlyVacantExpense;
@@ -175,7 +188,8 @@ class Montecarlo {
 			//$yearlyVariableExpenses = $yearlyRepairs + $yearlyPropertyManagementExpense;
 
 			//income
-			$yearlyIncome = $yearlyRent - $yearlyFixedExpenses - $yearlyRepairs - $yearlyPropertyManagementExpense;
+			$yearlyIncome = $yearlyRent - $yearlyFixedExpenses - $yearlyRepairs - $yearlyPropertyManagementExpense - ($mortgage->monthly_payment*12) ;
+			$yearlyIncome2 = $yearlyRent - $yearlyFixedExpenses - $yearlyRepairs - $yearlyPropertyManagementExpense - ($mortgage->monthly_payment2*12);
 			
 			//build array
 			//since each individual unit will have different months I can show just one row
@@ -200,8 +214,18 @@ class Montecarlo {
 			if($yearlyIncome < 0){
 				$losingMoneyScenarios++;
 			}
+
+			if($yearlyIncome2 < 0){
+				$losingMoneyScenarios2++;
+			}
+
+			//error_log("income: ".$yearlyIncome);
+			//error_log("income2: ".$yearlyIncome2);
 		}
-				
+
+		//error_log("payment: ".$losingMoneyScenarios);		
+		//error_log("payment2: ".$losingMoneyScenarios2);		
+
 		//expenses
 		$medianYearlyRent = SmartPassiveIncome::calculateMedian($ary_yearlyRent);		
 		$medianYearlyRepairs = SmartPassiveIncome::calculateMedian($ary_yearlyRepairs);
@@ -214,24 +238,28 @@ class Montecarlo {
 
 
 		$highestYearlyRent = SmartPassiveIncome::calculateHighest($ary_yearlyRent);	
-		$highestYearlyRepairs = SmartPassiveIncome::calculateHighest($ary_yearlyRepairs);
-		$highestYearlyPM = SmartPassiveIncome::calculateHighest($ary_yearlyPropertyManagementExpense);
+		$highestYearlyRepairs = SmartPassiveIncome::calculateLowest($ary_yearlyRepairs);
+		$highestYearlyPM = SmartPassiveIncome::calculateLowest($ary_yearlyPropertyManagementExpense);
 		
 		$lowestYearlyRent = SmartPassiveIncome::calculateLowest($ary_yearlyRent);		
-		$lowestYearlyRepairs = SmartPassiveIncome::calculateLowest($ary_yearlyRepairs);
-		$lowestYearlyPM = SmartPassiveIncome::calculateLowest($ary_yearlyPropertyManagementExpense);
+		$lowestYearlyRepairs = SmartPassiveIncome::calculateHighest($ary_yearlyRepairs);
+		$lowestYearlyPM = SmartPassiveIncome::calculateHighest($ary_yearlyPropertyManagementExpense);
 		
 		//income
 		$medianYearlyIncome = $medianYearlyRent - $medianYearlyPM - $medianYearlyRepairs - $yearlyFixedExpenses - $mortgage->monthly_payment*12;		
 		$highestYearlyIncome = $highestYearlyRent - $highestYearlyPM - $highestYearlyRepairs - $yearlyFixedExpenses - $mortgage->monthly_payment*12; 
 		$lowestYearlyIncome = $lowestYearlyRent - $lowestYearlyPM - $lowestYearlyRepairs - $yearlyFixedExpenses - $mortgage->monthly_payment*12; 
 
+		//error_log("medianYearlyIncome: ".$medianYearlyIncome);
+		//error_log("lowestYearlyIncome: ".$lowestYearlyIncome);
+
 		//calculate alternate income
-		$medianYearlyIncomeAlternate = $medianYearlyIncome + ($yearlyFixedExpensesDifference) - $mortgage->monthly_payment2*12;
-		$highestYearlyIncomeAlternate = $highestYearlyIncome + ($yearlyFixedExpensesDifference) - $mortgage->monthly_payment2*12;
-		$lowestYearlyIncomeAlternate = $lowestYearlyIncome + ($yearlyFixedExpensesDifference) - $mortgage->monthly_payment2*12;
+		$medianYearlyIncomeAlternate = $medianYearlyRent - $medianYearlyPM - $medianYearlyRepairs - $yearlyFixedExpenses - $mortgage->monthly_payment2*12;		
+		$highestYearlyIncomeAlternate = $highestYearlyRent - $highestYearlyPM - $highestYearlyRepairs - $yearlyFixedExpenses - $mortgage->monthly_payment2*12; 
+		$lowestYearlyIncomeAlternate = $lowestYearlyRent - $lowestYearlyPM - $lowestYearlyRepairs - $yearlyFixedExpenses - $mortgage->monthly_payment2*12; 
 
-
+		//error_log("medianYearlyIncomeAlternate: ".$medianYearlyIncomeAlternate);
+		//error_log("lowestYearlyIncome2: ".$lowestYearlyIncomeAlternate);
 
 		//roi
 		//if(strlen($mortgage->sale_price) > 0 && strlen($returnoninvestment->down_payment) < 0){
@@ -253,7 +281,8 @@ class Montecarlo {
 
 		//risk assesment
 		$losingMoneyChance = ($losingMoneyScenarios/$total_scenarios)*100;
-
+		$losingMoneyChance2 = ($losingMoneyScenarios2/$total_scenarios)*100;
+		
 		//misc calculations PMI
 		if($mortgage->percent_down > 20){
 			$pmiPerMonth = SmartPassiveIncome::calculatePMIPerMonth($mortgage->sale_price - $mortgage->percent_down);
@@ -269,14 +298,37 @@ class Montecarlo {
 		$estimate->rent = $medianYearlyRent/12;
 		$estimate->repairs = $medianYearlyRepairs/12;
 		$estimate->variable_expenses = ($medianYearlyPM + $medianYearlyRepairs)/12;		
-
 		$estimate->cashflow = $medianYearlyIncome/12;
 		$estimate->fixed_expenses = $monthlyFixedExpenses;
 		$estimate->roi = $medianYearlyROI;
 		$estimate->cashflow2 = $medianYearlyIncomeAlternate/12;
 		$estimate->fixed_expenses2 = $monthlyFixedExpensesAlternate/12;
 		$estimate->roi2 = $medianYearlyROIAlternate;
+		$estimate->risk = $losingMoneyChance;
+		$estimate->risk2 = $losingMoneyChance2;
 		$estimate->save();
+
+		$estimatebest->rent = $highestYearlyRent/12;
+		$estimatebest->repairs = $highestYearlyRepairs/12;
+		$estimatebest->variable_expenses = ($highestYearlyPM + $highestYearlyRepairs)/12;		
+		$estimatebest->cashflow = $highestYearlyIncome/12;
+		$estimatebest->fixed_expenses = $monthlyFixedExpenses;
+		$estimatebest->roi = $highestYearlyROI;
+		$estimatebest->cashflow2 = $highestYearlyIncomeAlternate/12;
+		$estimatebest->fixed_expenses2 = $monthlyFixedExpensesAlternate/12;
+		$estimatebest->roi2 = $highestYearlyROIAlternate;		
+		$estimatebest->save();
+
+		$estimateworst->rent = $lowestYearlyRent/12;
+		$estimateworst->repairs = $lowestYearlyRepairs/12;
+		$estimateworst->variable_expenses = ($lowestYearlyPM + $lowestYearlyRepairs)/12;		
+		$estimateworst->cashflow = $lowestYearlyIncome/12;
+		$estimateworst->fixed_expenses = $monthlyFixedExpenses;
+		$estimateworst->roi = $lowestYearlyROI;
+		$estimateworst->cashflow2 = $lowestYearlyIncomeAlternate/12;
+		$estimateworst->fixed_expenses2 = $monthlyFixedExpensesAlternate/12;
+		$estimateworst->roi2 = $lowestYearlyROIAlternate;		
+		$estimateworst->save();
 
 
 

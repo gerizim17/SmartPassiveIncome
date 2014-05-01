@@ -18,15 +18,7 @@ class BaseModel extends Eloquent
 
         $v = Validator::make($input, static::$rules, $customMessage);
 
-        return $v;
-        // if ($v->passes()) {            
-        //     return true;
-        // } else {
-        //     // save the input to the current session
-        //     Input::flash();
-        //     self::$validationMessages = $v->messages();
-        //     return false;
-        // }
+        return $v;       
     }
 
 }

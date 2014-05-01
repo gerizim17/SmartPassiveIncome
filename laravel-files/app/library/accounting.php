@@ -2,13 +2,61 @@
 
 class Accounting {	
 
-	public static function createIncomeStatement($realestate_id, $ary_income, $ary_expenses, $debt_service, $title = "Monthly Income Statement"){
+	public static function calculateVacancyPercent($estimate_rent, $rent){
+		return number_format(100-($estimate_rent/$rent)*100)."%";
+
+	}
+
+	public static function createIncomeAry($renttier, $vacancy_percent, $estimate, $title){
+
+		$ary = array(
+            trans("general.gpi") => ($title=="Yearly Income Statement")?$renttier->rent*12:$renttier->rent,
+            trans("general.vac", array("vacancy" => $vacancy_percent)) => ($title=="Yearly Income Statement")?($renttier->rent - $estimate->rent)*12:$renttier->rent - $estimate->rent,
+            trans("general.egi") => ($title=="Yearly Income Statement")?$estimate->rent*12:$estimate->rent,
+            trans("general.oi") => 0,
+            trans("general.goi") => ($title=="Yearly Income Statement")?$estimate->rent*12:$estimate->rent,
+        );
+
+        return $ary;
+	}
+
+	public static function createExpensesAry($fixedexpense, $estimate, $title){
+
+		$ary = array(
+            "general.propertytaxes" => ($title=="Yearly Income Statement")?$fixedexpense->taxes*12:$fixedexpense->taxes,
+            "general.insurance" => ($title=="Yearly Income Statement")?$fixedexpense->insurance*12:$fixedexpense->insurance,
+            "general.utilities" => ($title=="Yearly Income Statement")?$fixedexpense->utilities*12:$fixedexpense->utilities,
+            "general.otherexpenses" => ($title=="Yearly Income Statement")?$fixedexpense->misc*12:$fixedexpense->misc,
+            "general.repairs" => ($title=="Yearly Income Statement")?$estimate->repairs*12:$estimate->repairs,
+            "general.propertymanagement" => ($title=="Yearly Income Statement")?($estimate->variable_expenses-$estimate->repairs)*12:$estimate->variable_expenses-$estimate->repairs,
+        ); 
+
+        return $ary;
+	}
+
+	public static function createIncomeStatement($realestate_id, $debt_service, $title = "Monthly Income Statement", $mode = "average"){
 		$total_operating_expenses = 0;		
 		$mortgage = Mortgage::getByReId($realestate_id);
 		$roi = Returnoninvestment::getByReId($realestate_id);		
 		$price = $mortgage->sale_price;
-		$effective_gross_income = SmartPassiveIncome::cleanNumber($ary_income["Effective Gross Income"]);
+		
+        $renttier = Renttier::getByReId($realestate_id);        
+        $fixedexpense = Fixedexpense::getByReId($realestate_id);
+        if($mode=="average"){
+        	$estimate = Estimate::getByReId($realestate_id);
+        } else if($mode=="best") {
+        	$estimate = Estimatebest::getByReId($realestate_id);
+        } else if($mode=="worst") {
+        	$estimate = Estimateworst::getByReId($realestate_id);
+        }
+
+        $vacancy_percent = Accounting::calculateVacancyPercent($estimate->rent, $renttier->rent);        
+    	$ary_income = Accounting::createIncomeAry($renttier, $vacancy_percent, $estimate, $title);
+    	$ary_expenses = Accounting::createExpensesAry($fixedexpense, $estimate,  $title);
+
+        $effective_gross_income = SmartPassiveIncome::cleanNumber($ary_income["Effective Gross Income"]);
 		$gross_potential_income = SmartPassiveIncome::cleanNumber($ary_income["Gross Potential Income"]);
+
 		?>
 			<h3><?php echo $title; ?></h3>						
 			<table class="table table-condensed">

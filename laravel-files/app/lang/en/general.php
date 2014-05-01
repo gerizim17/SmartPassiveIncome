@@ -30,7 +30,7 @@ return array(
 	'selectproperty' => 'Please select a property',
 
 	'revenue' => 'Revenue',
-	'rent' => 'Rent',
+	'rent' => 'Total Rent',
 	'units' => 'Units',
 	'rentmin' => 'Months Rented Min',
 	'rentmax' => 'Months Rented Max',
