@@ -1,3 +1,29 @@
+## v1.1.22 (2014-04-06)
+
+- fix #19: don't call ini_set() when not required and gain compat with PHP5.6
+
+## v1.1.21 (2014-03-26)
+
+- fix #18 u::wordwrap() now relies on native behavior
+
+## v1.1.20 (2014-03-01)
+## v1.1.19 (2014-03-01)
+
+- fix mb_regex_encoding() being disabled on some hosting providers
+
+## v1.1.18 (2014-02-02)
+
+- require PCRE>=7.3, the first that correctly checks UTF-8 validity
+- enable HHVM on Travis CI
+
+## v1.1.17 (2014-01-02)
+
+- enable Travis CI and SensioLabsInsight
+- add shims for mb_check_encoding, mb_detect_encoding, mb_detect_order,
+  mb_language and mb_encoding_aliases
+- mbstring shim fix: alias UTF8 to UTF-8
+- more tests
+
 ## v1.1.16 (2013-12-06)
 
 - fix $_FILES bootup filtering
