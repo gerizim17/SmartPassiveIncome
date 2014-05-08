@@ -46,9 +46,9 @@
                     <div class="col-sm-4" id="bar_div_worst"></div>
                 </div>
                 <div class="form-group row">                   
-                    <div class="col-sm-5">{{ Accounting::createIncomeStatement($realestate_id, $mortgage->monthly_payment, "Monthly Income Statement", "worst") }} </div>
+                    <div class="col-sm-5">{{ Accounting::createIncomeStatement($realestate_id, $mortgage->monthly_payment, "Monthly Income Statement", "worst", "", "") }} </div>
                     <div class="col-sm-2"></div>
-                    <div class="col-sm-5">{{ Accounting::createIncomeStatement($realestate_id, $mortgage->monthly_payment*12, "Yearly Income Statement", "worst") }} </div>                    
+                    <div class="col-sm-5">{{ Accounting::createIncomeStatement($realestate_id, $mortgage->monthly_payment*12, "Yearly Income Statement", "worst", "", "") }} </div>                    
                 </div>
             </div>           
         </div>
@@ -60,9 +60,9 @@
                     <div class="col-sm-4" id="bar_div"></div>  
                 </div>
                 <div class="form-group row">                   
-                    <div class="col-sm-5">{{ Accounting::createIncomeStatement($realestate_id, $mortgage->monthly_payment) }} </div>
+                    <div class="col-sm-5">{{ Accounting::createIncomeStatement($realestate_id, $mortgage->monthly_payment, "Monthly Income Statement", "average", "", "") }} </div>
                     <div class="col-sm-2"></div>
-                    <div class="col-sm-5">{{ Accounting::createIncomeStatement($realestate_id, $mortgage->monthly_payment*12, "Yearly Income Statement") }} </div>                    
+                    <div class="col-sm-5">{{ Accounting::createIncomeStatement($realestate_id, $mortgage->monthly_payment*12, "Yearly Income Statement", "average", "", "") }} </div>                    
                 </div>
             </div>
         </div>
@@ -74,9 +74,9 @@
                     <div class="col-sm-4" id="bar_div_best"></div>  
                 </div>
                 <div class="form-group row">                   
-                    <div class="col-sm-5">{{ Accounting::createIncomeStatement($realestate_id, $mortgage->monthly_payment, "Monthly Income Statement", "best") }} </div>
+                    <div class="col-sm-5">{{ Accounting::createIncomeStatement($realestate_id, $mortgage->monthly_payment, "Monthly Income Statement", "best", "", "") }} </div>
                     <div class="col-sm-2"></div>
-                    <div class="col-sm-5">{{ Accounting::createIncomeStatement($realestate_id, $mortgage->monthly_payment*12, "Yearly Income Statement", "best") }} </div>                    
+                    <div class="col-sm-5">{{ Accounting::createIncomeStatement($realestate_id, $mortgage->monthly_payment*12, "Yearly Income Statement", "best", "", "") }} </div>                    
                 </div>
             </div>
         </div>

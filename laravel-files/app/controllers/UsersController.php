@@ -44,7 +44,6 @@ class UsersController extends BaseController
        
     }
 
-
     public function handleDelete($re_id)
     {
        
