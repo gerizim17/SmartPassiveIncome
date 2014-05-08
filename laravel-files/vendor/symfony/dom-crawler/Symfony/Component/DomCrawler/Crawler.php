@@ -107,7 +107,7 @@ class Crawler extends \SplObjectStorage
 
         // DOM only for HTML/XML content
         if (!preg_match('/(x|ht)ml/i', $type, $xmlMatches)) {
-            return null;
+            return;
         }
 
         $charset = null;
@@ -151,19 +151,31 @@ class Crawler extends \SplObjectStorage
      */
     public function addHtmlContent($content, $charset = 'UTF-8')
     {
-        $current = libxml_use_internal_errors(true);
+        $internalErrors = libxml_use_internal_errors(true);
         $disableEntities = libxml_disable_entity_loader(true);
 
         $dom = new \DOMDocument('1.0', $charset);
         $dom->validateOnParse = true;
 
-        if (function_exists('mb_convert_encoding') && in_array(strtolower($charset), array_map('strtolower', mb_list_encodings()))) {
-            $content = mb_convert_encoding($content, 'HTML-ENTITIES', $charset);
+        if (function_exists('mb_convert_encoding')) {
+            $hasError = false;
+            set_error_handler(function () use (&$hasError) {
+                $hasError = true;
+            });
+            $tmpContent = @mb_convert_encoding($content, 'HTML-ENTITIES', $charset);
+
+            restore_error_handler();
+
+            if (!$hasError) {
+                $content = $tmpContent;
+            }
         }
 
-        @$dom->loadHTML($content);
+        if ('' !== trim($content)) {
+            @$dom->loadHTML($content);
+        }
 
-        libxml_use_internal_errors($current);
+        libxml_use_internal_errors($internalErrors);
         libxml_disable_entity_loader($disableEntities);
 
         $this->addDocument($dom);
@@ -200,14 +212,22 @@ class Crawler extends \SplObjectStorage
      */
     public function addXmlContent($content, $charset = 'UTF-8')
     {
-        $current = libxml_use_internal_errors(true);
+        // remove the default namespace if it's the only namespace to make XPath expressions simpler
+        if (!preg_match('/xmlns:/', $content)) {
+            $content = str_replace('xmlns', 'ns', $content);
+        }
+
+        $internalErrors = libxml_use_internal_errors(true);
         $disableEntities = libxml_disable_entity_loader(true);
 
         $dom = new \DOMDocument('1.0', $charset);
         $dom->validateOnParse = true;
-        @$dom->loadXML($content, LIBXML_NONET);
 
-        libxml_use_internal_errors($current);
+        if ('' !== trim($content)) {
+            @$dom->loadXML($content, LIBXML_NONET);
+        }
+
+        libxml_use_internal_errors($internalErrors);
         libxml_disable_entity_loader($disableEntities);
 
         $this->addDocument($dom);
@@ -274,7 +294,7 @@ class Crawler extends \SplObjectStorage
     /**
      * Returns a node given its position in the node list.
      *
-     * @param integer $position The position
+     * @param int     $position The position
      *
      * @return Crawler A new instance of the Crawler with the selected node, or an empty Crawler if it does not exist.
      *
@@ -788,7 +808,7 @@ class Crawler extends \SplObjectStorage
     }
 
     /**
-     * @param integer $position
+     * @param int     $position
      *
      * @return \DOMElement|null
      */
@@ -800,8 +820,6 @@ class Crawler extends \SplObjectStorage
             }
         // @codeCoverageIgnoreStart
         }
-
-        return null;
         // @codeCoverageIgnoreEnd
     }
 

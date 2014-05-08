@@ -149,6 +149,13 @@ class Builder {
 	protected $cacheTags;
 
 	/**
+	 * The cache driver to be used.
+	 *
+	 * @var string
+	 */
+	protected $cacheDriver;
+
+	/**
 	 * All of the available clause operators.
 	 *
 	 * @var array
@@ -187,6 +194,17 @@ class Builder {
 		$this->columns = is_array($columns) ? $columns : func_get_args();
 
 		return $this;
+	}
+
+	/**
+	 * Add a new "raw" select expression to the query.
+	 *
+	 * @param  string  $expression
+	 * @return \Illuminate\Database\Query\Builder|static
+	 */
+	public function selectRaw($expression)
+	{
+		return $this->select(new Expression($expression));
 	}
 
 	/**
@@ -396,7 +414,7 @@ class Builder {
 	 * Determine if the given operator and value combination is legal.
 	 *
 	 * @param  string  $operator
-	 * @param  mxied  $value
+	 * @param  mixed  $value
 	 * @return bool
 	 */
 	protected function invalidOperatorAndValue($operator, $value)
@@ -462,10 +480,9 @@ class Builder {
 	 *
 	 * @param  string  $column
 	 * @param  array   $values
-	 * @param  bool  $not
 	 * @return \Illuminate\Database\Query\Builder|static
 	 */
-	public function orWhereBetween($column, array $values, $not = false)
+	public function orWhereBetween($column, array $values)
 	{
 		return $this->whereBetween($column, $values, 'or');
 	}
@@ -507,19 +524,28 @@ class Builder {
 		// To handle nested queries we'll actually create a brand new query instance
 		// and pass it off to the Closure that we have. The Closure can simply do
 		// do whatever it wants to a query then we will store it for compiling.
-		$type = 'Nested';
-
 		$query = $this->newQuery();
 
 		$query->from($this->from);
 
 		call_user_func($callback, $query);
 
-		// Once we have let the Closure do its things, we can gather the bindings on
-		// the nested query builder and merge them into these bindings since they
-		// need to get extracted out of the children and assigned to the array.
+		return $this->addNestedWhereQuery($query, $boolean);
+	}
+
+	/**
+	 * Add another query builder as a nested where to the query builder.
+	 *
+	 * @param  \Illuminate\Database\Query\Builder|static $query
+	 * @param  string  $boolean
+	 * @return \Illuminate\Database\Query\Builder|static
+	 */
+	public function addNestedWhereQuery($query, $boolean = 'and')
+	{
 		if (count($query->wheres))
 		{
+			$type = 'Nested';
+
 			$this->wheres[] = compact('type', 'query', 'boolean');
 
 			$this->mergeBindings($query);
@@ -758,6 +784,67 @@ class Builder {
 	}
 
 	/**
+	 * Add a "where day" statement to the query.
+	 *
+	 * @param  string  $column
+	 * @param  string   $operator
+	 * @param  int   $value
+	 * @param  string   $boolean
+	 * @return \Illuminate\Database\Query\Builder|static
+	 */
+	public function whereDay($column, $operator, $value, $boolean = 'and')
+	{
+		return $this->addDateBasedWhere('Day', $column, $operator, $value, $boolean);
+	}
+
+	/**
+	 * Add a "where month" statement to the query.
+	 *
+	 * @param  string  $column
+	 * @param  string   $operator
+	 * @param  int   $value
+	 * @param  string   $boolean
+	 * @return \Illuminate\Database\Query\Builder|static
+	 */
+	public function whereMonth($column, $operator, $value, $boolean = 'and')
+	{
+		return $this->addDateBasedWhere('Month', $column, $operator, $value, $boolean);
+	}
+
+	/**
+	 * Add a "where year" statement to the query.
+	 *
+	 * @param  string  $column
+	 * @param  string   $operator
+	 * @param  int   $value
+	 * @param  string   $boolean
+	 * @return \Illuminate\Database\Query\Builder|static
+	 */
+	public function whereYear($column, $operator, $value, $boolean = 'and')
+	{
+		return $this->addDateBasedWhere('Year', $column, $operator, $value, $boolean);
+	}
+
+	/**
+	 * Add a date based (year, month, day) statement to the query.
+	 *
+	 * @param  string  $type
+	 * @param  string  $column
+	 * @param  string  $operator
+	 * @param  int  $value
+	 * @param  string  $boolean
+	 * @return \Illuminate\Database\Query\Builder|static
+	 */
+	protected function addDateBasedWhere($type, $column, $operator, $value, $boolean = 'and')
+	{
+		$this->wheres[] = compact('column', 'type', 'boolean', 'operator', 'value');
+
+		$this->bindings[] = $value;
+
+		return $this;
+	}
+
+	/**
 	 * Handles dynamic "where" clauses to the query.
 	 *
 	 * @param  string  $method
@@ -921,7 +1008,7 @@ class Builder {
 		return $this->orderBy($column, 'asc');
 	}
 
-	/*
+	/**
 	 * Add a raw "order by" clause to the query.
 	 *
 	 * @param  string  $sql
@@ -947,7 +1034,7 @@ class Builder {
 	 */
 	public function offset($value)
 	{
-		$this->offset = $value;
+		$this->offset = max(0, $value);
 
 		return $this;
 	}
@@ -1075,7 +1162,7 @@ class Builder {
 	/**
 	 * Indicate that the query results should be cached.
 	 *
-	 * @param  \Carbon\Carbon|\Datetime|int  $minutes
+	 * @param  \DateTime|int  $minutes
 	 * @param  string  $key
 	 * @return \Illuminate\Database\Query\Builder|static
 	 */
@@ -1094,9 +1181,7 @@ class Builder {
 	 */
 	public function rememberForever($key = null)
 	{
-		list($this->cacheMinutes, $this->cacheKey) = array(-1, $key);
-
-		return $this;
+		return $this->remember(-1, $key);
 	}
 
 	/**
@@ -1108,6 +1193,19 @@ class Builder {
 	public function cacheTags($cacheTags)
 	{
 		$this->cacheTags = $cacheTags;
+
+		return $this;
+	}
+
+	/**
+	 * Indicate that the results, if cached, should use the given cache driver.
+	 *
+	 * @param  string  $cacheDriver
+	 * @return \Illuminate\Database\Query\Builder|static
+	 */
+	public function cacheDriver($cacheDriver)
+	{
+		$this->cacheDriver = $cacheDriver;
 
 		return $this;
 	}
@@ -1196,7 +1294,7 @@ class Builder {
 	{
 		if (is_null($this->columns)) $this->columns = $columns;
 
-		// If the query is requested ot be cached, we will cache it using a unique key
+		// If the query is requested to be cached, we will cache it using a unique key
 		// for this database connection and query statement, including the bindings
 		// that are used on this query, providing great convenience when caching.
 		list($key, $minutes) = $this->getCacheInfo();
@@ -1225,7 +1323,7 @@ class Builder {
 	 */
 	protected function getCache()
 	{
-		$cache = $this->connection->getCacheManager();
+		$cache = $this->connection->getCacheManager()->driver($this->cacheDriver);
 
 		return $this->cacheTags ? $cache->tags($this->cacheTags) : $cache;
 	}
@@ -1488,7 +1586,7 @@ class Builder {
 	 */
 	public function count($column = '*')
 	{
-		return $this->aggregate(__FUNCTION__, array($column));
+		return (int) $this->aggregate(__FUNCTION__, array($column));
 	}
 
 	/**
@@ -1555,7 +1653,7 @@ class Builder {
 
 		if (isset($results[0]))
 		{
-			$result = (array) $results[0];
+			$result = array_change_key_case((array) $results[0]);
 
 			return $result['aggregate'];
 		}

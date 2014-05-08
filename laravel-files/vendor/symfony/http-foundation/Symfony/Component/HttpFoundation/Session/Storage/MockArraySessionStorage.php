@@ -12,7 +12,6 @@
 namespace Symfony\Component\HttpFoundation\Session\Storage;
 
 use Symfony\Component\HttpFoundation\Session\SessionBagInterface;
-use Symfony\Component\HttpFoundation\Session\Storage\MetadataBag;
 
 /**
  * MockArraySessionStorage mocks the session for unit tests.
@@ -39,12 +38,12 @@ class MockArraySessionStorage implements SessionStorageInterface
     protected $name;
 
     /**
-     * @var boolean
+     * @var bool
      */
     protected $started = false;
 
     /**
-     * @var boolean
+     * @var bool
      */
     protected $closed = false;
 

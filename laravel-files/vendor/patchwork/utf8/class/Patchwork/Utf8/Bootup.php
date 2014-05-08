@@ -48,31 +48,27 @@ class Bootup
                 user_error('php.ini settings: Please disable mbstring.func_overload', E_USER_WARNING);
             }
 
-            mb_regex_encoding('UTF-8');
+            if (function_exists('mb_regex_encoding')) mb_regex_encoding('UTF-8');
             ini_set('mbstring.script_encoding', 'pass');
 
             if ('utf-8' !== strtolower(mb_internal_encoding()))
             {
                 mb_internal_encoding('UTF-8');
-                ini_set('mbstring.internal_encoding', 'UTF-8');
             }
 
             if ('none' !== strtolower(mb_substitute_character()))
             {
                 mb_substitute_character('none');
-                ini_set('mbstring.substitute_character', 'none');
             }
 
             if (!in_array(strtolower(mb_http_output()), array('pass', '8bit')))
             {
                 mb_http_output('pass');
-                ini_set('mbstring.http_output', 'pass');
             }
 
             if (!in_array(strtolower(mb_language()), array('uni', 'neutral')))
             {
                 mb_language('uni');
-                ini_set('mbstring.language', 'uni');
             }
         }
         else if (!defined('MB_OVERLOAD_MAIL'))
@@ -90,19 +86,16 @@ class Bootup
             if ('UTF-8' !== iconv_get_encoding('input_encoding'))
             {
                 iconv_set_encoding('input_encoding', 'UTF-8');
-                ini_set('iconv.input_encoding', 'UTF-8');
             }
 
             if ('UTF-8' !== iconv_get_encoding('internal_encoding'))
             {
                 iconv_set_encoding('internal_encoding', 'UTF-8');
-                ini_set('iconv.internal_encoding', 'UTF-8');
             }
 
             if ('UTF-8' !== iconv_get_encoding('output_encoding'))
             {
                 iconv_set_encoding('output_encoding' , 'UTF-8');
-                ini_set('iconv.output_encoding', 'UTF-8');
             }
         }
         else if (!defined('ICONV_IMPL'))
@@ -166,28 +159,41 @@ class Bootup
         }
     }
 
-    static function filterRequestUri()
+    static function filterRequestUri($uri = null, $exit = true)
     {
+        if (! isset($uri))
+        {
+            if (! isset($_SERVER['REQUEST_URI'])) return;
+            else $uri = $_SERVER['REQUEST_URI'];
+        }
+
         // Ensures the URL is well formed UTF-8
         // When not, assumes Windows-1252 and redirects to the corresponding UTF-8 encoded URL
 
-        if (isset($_SERVER['REQUEST_URI']) && !preg_match('//u', urldecode($a = $_SERVER['REQUEST_URI'])))
+        if (! preg_match('//u', urldecode($uri)))
         {
-            if ($a === u::utf8_decode($a))
+            $uri = preg_replace_callback(
+                '/[\x80-\xFF]+/',
+                function($m) {return urlencode($m[0]);},
+                $uri
+            );
+
+            $uri = preg_replace_callback(
+                '/(?:%[89A-F][0-9A-F])+/i',
+                function($m) {return urlencode(u::utf8_encode(urldecode($m[0])));},
+                $uri
+            );
+
+            if ($exit)
             {
-                $a = preg_replace_callback(
-                    '/(?:%[89A-F][0-9A-F])+/i',
-                    function($m) {return urlencode(u::utf8_encode(urldecode($m[0])));},
-                    $a
-                );
+                header('HTTP/1.1 301 Moved Permanently');
+                header('Location: ' . $uri);
+
+                exit; // TODO: remove this in 1.2 (BC)
             }
-            else $a = '/';
-
-            header('HTTP/1.1 301 Moved Permanently');
-            header('Location: ' . $a);
-
-            exit;
         }
+
+        return $uri;
     }
 
     static function filterRequestInputs($normalization_form = 4 /* n::NFC */, $leading_combining = '◌')

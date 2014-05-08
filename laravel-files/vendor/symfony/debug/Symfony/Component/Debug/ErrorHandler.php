@@ -59,8 +59,8 @@ class ErrorHandler
     /**
      * Registers the error handler.
      *
-     * @param integer $level         The level at which the conversion to Exception is done (null to use the error_reporting() value and 0 to disable)
-     * @param Boolean $displayErrors Display errors (for dev environment) or just log them (production usage)
+     * @param int  $level         The level at which the conversion to Exception is done (null to use the error_reporting() value and 0 to disable)
+     * @param bool $displayErrors Display errors (for dev environment) or just log them (production usage)
      *
      * @return ErrorHandler The registered error handler
      */
@@ -81,7 +81,7 @@ class ErrorHandler
     /**
      * Sets the level at which the conversion to Exception is done.
      *
-     * @param integer|null $level The level (null to use the error_reporting() value and 0 to disable)
+     * @param int|null     $level The level (null to use the error_reporting() value and 0 to disable)
      */
     public function setLevel($level)
     {
@@ -91,7 +91,7 @@ class ErrorHandler
     /**
      * Sets the display_errors flag value.
      *
-     * @param integer $displayErrors The display_errors flag value
+     * @param int     $displayErrors The display_errors flag value
      */
     public function setDisplayErrors($displayErrors)
     {
@@ -161,10 +161,10 @@ class ErrorHandler
 
                 // we must stop the PHP script execution, as the exception has
                 // already been dealt with, so, let's throw an exception that
-                // will be catched by a dummy exception handler
+                // will be caught by a dummy exception handler
                 set_exception_handler(function (\Exception $e) use ($exceptionHandler) {
                     if (!$e instanceof DummyException) {
-                        // happens if our dummy exception is catched by a
+                        // happens if our dummy exception is caught by a
                         // catch-all from user code, in which case, let's the
                         // current handler handle this "new" exception
                         call_user_func($exceptionHandler, $e);
@@ -205,7 +205,7 @@ class ErrorHandler
         }
 
         // get current exception handler
-        $exceptionHandler = set_exception_handler(function() {});
+        $exceptionHandler = set_exception_handler(function () {});
         restore_exception_handler();
 
         if (is_array($exceptionHandler) && $exceptionHandler[0] instanceof ExceptionHandler) {

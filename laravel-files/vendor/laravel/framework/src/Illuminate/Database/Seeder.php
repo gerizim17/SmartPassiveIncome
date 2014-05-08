@@ -36,7 +36,10 @@ class Seeder {
 	{
 		$this->resolve($class)->run();
 
-		$this->command->getOutput()->writeln("<info>Seeded:</info> $class");
+		if (isset($this->command))
+		{
+			$this->command->getOutput()->writeln("<info>Seeded:</info> $class");
+		}
 	}
 
 	/**
@@ -51,12 +54,19 @@ class Seeder {
 		{
 			$instance = $this->container->make($class);
 
-			return $instance->setContainer($this->container)->setCommand($this->command);
+			$instance->setContainer($this->container);
 		}
 		else
 		{
-			return new $class;
+			$instance = new $class;
 		}
+
+		if (isset($this->command))
+		{
+			$instance->setCommand($this->command);
+		}
+
+		return $instance;
 	}
 
 	/**
