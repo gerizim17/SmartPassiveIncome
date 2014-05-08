@@ -34,7 +34,7 @@ class Accounting {
         return $ary;
 	}
 
-	public static function createIncomeStatement($realestate_id, $debt_service, $title = "Monthly Income Statement", $mode = "average"){
+	public static function createIncomeStatement($realestate_id, $debt_service, $title, $mode, $ary_income, $ary_expenses){
 		$total_operating_expenses = 0;		
 		$mortgage = Mortgage::getByReId($realestate_id);
 		$roi = Returnoninvestment::getByReId($realestate_id);		
@@ -50,9 +50,12 @@ class Accounting {
         	$estimate = Estimateworst::getByReId($realestate_id);
         }
 
-        $vacancy_percent = Accounting::calculateVacancyPercent($estimate->rent, $renttier->rent);        
-    	$ary_income = Accounting::createIncomeAry($renttier, $vacancy_percent, $estimate, $title);
-    	$ary_expenses = Accounting::createExpensesAry($fixedexpense, $estimate,  $title);
+        //Estimate only gets set when building income statements for Montecarlo. Estimate does not get set for Rental HIstory
+        if(isset($estimate)){
+        	$vacancy_percent = Accounting::calculateVacancyPercent($estimate->rent, $renttier->rent);
+    		$ary_income = Accounting::createIncomeAry($renttier, $vacancy_percent, @$estimate, $title);
+    		$ary_expenses = Accounting::createExpensesAry($fixedexpense, @$estimate,  $title);    
+    	}
 
         $effective_gross_income = SmartPassiveIncome::cleanNumber($ary_income["Effective Gross Income"]);
 		$gross_potential_income = SmartPassiveIncome::cleanNumber($ary_income["Gross Potential Income"]);

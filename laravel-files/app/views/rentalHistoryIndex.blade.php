@@ -120,8 +120,8 @@
             </table>          
             @if (!$rentalhistories->isEmpty())  
              <div class="form-group row">
-                <div class="col-sm-6">{{ Accounting::createIncomeStatement($realestate_id, $ary_account_income, $ary_account_expenses, $average_mortgage, "Avg. Income Statement") }} </div>
-                <div class="col-sm-6">{{ Accounting::createIncomeStatement($realestate_id, $ary_annual_account_income, $ary_annual_account_expenses, $debt_service, "Yearly Income Statement") }} </div>
+                <div class="col-sm-6">{{ Accounting::createIncomeStatement($realestate_id, $average_mortgage, "Avg. Income Statement", "", $ary_account_income, $ary_account_expenses) }} </div>
+                <div class="col-sm-6">{{ Accounting::createIncomeStatement($realestate_id,  $debt_service, "Yearly Income Statement", "",$ary_annual_account_income, $ary_annual_account_expenses) }} </div>
             </div>            
             @endif
     @endif

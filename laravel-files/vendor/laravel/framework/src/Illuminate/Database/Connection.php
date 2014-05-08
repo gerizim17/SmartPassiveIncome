@@ -60,7 +60,7 @@ class Connection implements ConnectionInterface {
 	/**
 	 * The cache manager instance.
 	 *
-	 * @var \Illuminate\Cache\CacheManger
+	 * @var \Illuminate\Cache\CacheManager
 	 */
 	protected $cache;
 
@@ -370,7 +370,7 @@ class Connection implements ConnectionInterface {
 	 */
 	public function unprepared($query)
 	{
-		return $this->run($query, array(), function($me, $query, $bindings)
+		return $this->run($query, array(), function($me, $query)
 		{
 			if ($me->pretending()) return true;
 
@@ -454,6 +454,8 @@ class Connection implements ConnectionInterface {
 		{
 			$this->pdo->beginTransaction();
 		}
+
+		$this->fireConnectionEvent('beganTransaction');
 	}
 
 	/**
@@ -466,6 +468,8 @@ class Connection implements ConnectionInterface {
 		if ($this->transactions == 1) $this->pdo->commit();
 
 		--$this->transactions;
+
+		$this->fireConnectionEvent('committed');
 	}
 
 	/**
@@ -485,6 +489,18 @@ class Connection implements ConnectionInterface {
 		{
 			--$this->transactions;
 		}
+
+		$this->fireConnectionEvent('rollingBack');
+	}
+
+	/**
+	 * Get the number of active transactions.
+	 *
+	 * @return int
+	 */
+	public function transactionLevel()
+	{
+		return $this->transactions;
 	}
 
 	/**
@@ -584,6 +600,20 @@ class Connection implements ConnectionInterface {
 	}
 
 	/**
+	 * Fire an event for this connection.
+	 *
+	 * @param  string  $event
+	 * @return void
+	 */
+	protected function fireConnectionEvent($event)
+	{
+		if (isset($this->events))
+		{
+			$this->events->fire('connection.'.$this->getName().'.'.$event, $this);
+		}
+	}
+
+	/**
 	 * Get the elapsed time since a given starting point.
 	 *
 	 * @param  int    $start
@@ -649,6 +679,8 @@ class Connection implements ConnectionInterface {
 	 */
 	public function getReadPdo()
 	{
+		if ($this->transactions >= 1) return $this->getPdo();
+
 		return $this->readPdo ?: $this->pdo;
 	}
 
@@ -914,6 +946,16 @@ class Connection implements ConnectionInterface {
 	public function disableQueryLog()
 	{
 		$this->loggingQueries = false;
+	}
+
+	/**
+	 * Determine whether we're logging queries.
+	 *
+	 * @return bool
+	 */
+	public function logging()
+	{
+		return $this->loggingQueries;
 	}
 
 	/**
