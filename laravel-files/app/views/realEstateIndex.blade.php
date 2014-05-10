@@ -29,7 +29,7 @@
             <tbody>
                 @foreach($realestates as $realestate)
                 <tr>
-                    <td>{{ $realestate->address1 }}</td>
+                    <td><a href="{{ url('rentalhistory/selectrealestate', $realestate->id) }}">{{ $realestate->address1 }}</a></td>
                     <td>{{ $realestate->address2 }}</td>
                     <td>{{ $realestate->city }}</td>
                     <td>{{ $realestate->state }}</td>
