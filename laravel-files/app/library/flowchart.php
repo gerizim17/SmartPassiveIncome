@@ -20,7 +20,7 @@ class Flowchart {
 			    var currentTerm = 1;
 			    $(document).ready(function() {
 
-			    	// Radialize the colors
+			  //   	Radialize the colors
 					// Highcharts.getOptions().colors = Highcharts.map(Highcharts.getOptions().colors, function(color) {
 					//     return {
 					//         radialGradient: { cx: 0.5, cy: 0.3, r: 0.7 },
@@ -30,6 +30,20 @@ class Flowchart {
 					//         ]
 					//     };
 					// });
+
+			// Make monochrome colors and set them as default for all pies
+					Highcharts.getOptions().plotOptions.pie.colors = (function () {
+			            var colors = [],
+			                base = Highcharts.getOptions().colors[0],
+			                i
+
+			            for (i = 0; i < 10; i++) {
+			                // Start out with a darkened base color (negative brighten), and end
+			                // up with a much brighter color
+			                colors.push(Highcharts.Color(base).brighten((i - 3) / 7).get());
+			            }
+			            return colors;
+					}());
 
 			        /*************************************************
 					   PIE CHART DATA
@@ -136,7 +150,7 @@ class Flowchart {
 		                color: '#910000'
 		            }, {
 		                name: 'Repayed',	
-		                color:'#4572A7'	                
+		                color:'#5891C8'	                
 		            }]	
 				};
 
