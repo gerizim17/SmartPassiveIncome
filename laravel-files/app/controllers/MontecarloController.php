@@ -153,7 +153,7 @@ class MontecarloController extends BaseController
         $fixedexpense = compact('fixedexpense');
         $roi = compact('roi');
 
-        return Redirect::action('MontecarloController@calculateEstimate', array($realestate_id, '1000'));
+        return Redirect::action('MontecarloController@calculateEstimate', array($realestate_id, '1001'));
 
     }
 
