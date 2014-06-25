@@ -13,8 +13,8 @@
     @endif
 
     @if (isset($realestate_id) && isset($renttier))        
-        {{ Flowchart::drawPieChart($realestate_id, "pie_div") }}
-        {{ Flowchart::drawColumnChart($realestate_id, "bar_div") }}
+        {{ Flowchart::drawPieChart($realestate_id, "pie_div", "median") }}
+        {{ Flowchart::drawColumnChart($realestate_id, "bar_div", "median") }}
 
         {{ Flowchart::drawPieChart($realestate_id, "pie_div_best", "best") }}
         {{ Flowchart::drawColumnChart($realestate_id, "bar_div_best", "best") }}

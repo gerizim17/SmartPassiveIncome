@@ -15,6 +15,50 @@ class SmartPassiveIncome {
 		}
 		return $median;
 	}
+
+	public static function calculateMedianIndex($arr) {
+		$incomes = array();
+
+		foreach ($arr as $scenario) {
+			$incomes[] = $scenario['income'];
+		}
+
+		array_multisort($incomes, SORT_ASC, $arr);
+
+		//print_r($arr);
+
+		$count = count($arr); //total numbers in array
+		$middleval = floor(($count-1)/2); // find the middle value, or the lowest middle value		
+		$index = $arr[$middleval]['index'];
+		return $index;
+	}
+
+	public static function calculateLowestIndex($arr) {
+		$incomes = array();
+
+		foreach ($arr as $scenario) {
+			$incomes[] = $scenario['income'];
+		}
+
+		array_multisort($incomes, SORT_ASC, $arr);
+
+		$index = $arr[0]['index'];
+		return $index;
+	}
+
+	public static function calculateHighestIndex($arr) {
+		
+		$incomes = array();
+
+		foreach ($arr as $scenario) {
+			$incomes[] = $scenario['income'];
+		}
+
+		array_multisort($incomes, SORT_ASC, $arr);
+		$count = count($arr);
+		return $arr[$count-1]['index'];
+	}
+
 	public static function calculateAverage($arr) {
 		$count = count($arr); //total numbers in array
 		$total = 0;
@@ -54,7 +98,7 @@ class SmartPassiveIncome {
 			$ary_deviations[$key] = $value * $value;
 		}
 
-		//error_log("Deviations squared: ".print_r($ary_deviations))	;
+		//error_log("Deviations squared: ".print_r($ary_deviations));
 
 		//sum all squared deviations
 		$squared_deviations_summed = 0;
@@ -72,7 +116,7 @@ class SmartPassiveIncome {
 		//square root of the last number
 		$standard_deviation = sqrt($squared_deviations_summed);
 		
-		error_log("Standard Deviation: ".$standard_deviation);	
+		//error_log("Standard Deviation: ".$standard_deviation);	
 
 		return $standard_deviation;
 	}
@@ -125,6 +169,10 @@ class SmartPassiveIncome {
 	public static function percent($input) {
 		//return '$' . number_format($input, "2", ".", ",");
 		return number_format($input, "2", ".", ",")."%";
+	}
+
+	public static function decimalToPercent($input){
+		return $input * 100;		
 	}
 
 	/**
