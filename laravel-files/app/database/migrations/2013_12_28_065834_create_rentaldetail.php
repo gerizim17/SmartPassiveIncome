@@ -135,6 +135,8 @@ class CreateRentaldetail extends Migration {
 			$table->decimal('roi2');
 			$table->decimal('risk');
 			$table->decimal('risk2');
+			$table->decimal('probability');
+			$table->decimal('probability2');
 	        $table->timestamps();
 		});
 
@@ -152,6 +154,8 @@ class CreateRentaldetail extends Migration {
 			$table->decimal('cashflow2');
 			$table->decimal('fixed_expenses2');			
 			$table->decimal('roi2');
+			$table->decimal('probability');
+			$table->decimal('probability2');
 	        $table->timestamps();
 		});
 
@@ -169,6 +173,8 @@ class CreateRentaldetail extends Migration {
 			$table->decimal('cashflow2');
 			$table->decimal('fixed_expenses2');			
 			$table->decimal('roi2');
+			$table->decimal('probability');
+			$table->decimal('probability2');
 	        $table->timestamps();
 		});
 	}
