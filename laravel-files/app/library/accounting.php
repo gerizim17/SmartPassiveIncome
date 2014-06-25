@@ -2,9 +2,8 @@
 
 class Accounting {	
 
-	public static function calculateVacancyPercent($estimate_rent, $rent){
+	public static function calculateVacancyPercent($estimate_rent, $rent){		
 		return number_format(100-($estimate_rent/$rent)*100)."%";
-
 	}
 
 	public static function createIncomeAry($renttier, $vacancy_percent, $estimate, $title){
@@ -51,7 +50,7 @@ class Accounting {
         }
 
         //Estimate only gets set when building income statements for Montecarlo. Estimate does not get set for Rental HIstory
-        if(isset($estimate)){
+        if(isset($estimate)){        	
         	$vacancy_percent = Accounting::calculateVacancyPercent($estimate->rent, $renttier->rent);
     		$ary_income = Accounting::createIncomeAry($renttier, $vacancy_percent, @$estimate, $title);
     		$ary_expenses = Accounting::createExpensesAry($fixedexpense, @$estimate,  $title);    
