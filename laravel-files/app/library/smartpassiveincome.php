@@ -221,6 +221,12 @@ class SmartPassiveIncome {
 
 	}
 
+	public static function defaultIfBlank($field, $defaultval){
+		$value = (strlen(trim($field)) == 0)?$defaultval:$field;
+
+		return $value;
+	}
+
 	public static function calculatePMIPerMonth($financingPrice){
 		//error_log("calculating pmi...");
 		$pmiPerMonth  = 55 * ($financingPrice / 100000);

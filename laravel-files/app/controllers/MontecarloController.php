@@ -75,16 +75,16 @@ class MontecarloController extends BaseController
         $realestate_id = Input::get('realestate_id');        
 
         $rentaldetail = Rentaldetail::getByReId($realestate_id);
-        if(!isset($rentaldetail)){ 
+        if(!isset($rentaldetail)){
             $rentaldetail = new Rentaldetail; 
             $rentaldetail->realestate_id = $realestate_id;
         }
-        $rentaldetail->months_min = Input::get('months_min');
-        $rentaldetail->months_max = Input::get('months_max');
-        $rentaldetail->repair_min = Input::get('repair_min');
-        $rentaldetail->repair_max = Input::get('repair_max');
-        $rentaldetail->pm_monthly_charge = Input::get('pm_monthly_charge');
-        $rentaldetail->pm_vacancy_charge = Input::get('pm_vacancy_charge');
+        $rentaldetail->months_min = SmartPassiveIncome::defaultIfBlank(Input::get('months_min'), "12");
+        $rentaldetail->months_max = SmartPassiveIncome::defaultIfBlank(Input::get('months_max'), "12");
+        $rentaldetail->repair_min = SmartPassiveIncome::defaultIfBlank(Input::get('repair_min'), "0.00");
+        $rentaldetail->repair_max = SmartPassiveIncome::defaultIfBlank(Input::get('repair_max'), "0.00");
+        $rentaldetail->pm_monthly_charge = SmartPassiveIncome::defaultIfBlank(Input::get('pm_monthly_charge'), "0.00");
+        $rentaldetail->pm_vacancy_charge = SmartPassiveIncome::defaultIfBlank(Input::get('pm_vacancy_charge'), "0.00");
         $rentaldetail->save();        
                        
         $renttier = Renttier::getByReId($realestate_id);
@@ -98,12 +98,12 @@ class MontecarloController extends BaseController
 
         $mortgage = Mortgage::getByReId($realestate_id);
         
-        $mortgage->sale_price = Input::get('sale_price');
-        $mortgage->interest_rate = Input::get('interest_rate');
-        $mortgage->percent_down = Input::get('percent_down');        
-        $mortgage->term = Input::get('term');
-        $mortgage->term2 = Input::get('term2');
-        $mortgage->calculator = Input::get('calculator');
+        $mortgage->sale_price = SmartPassiveIncome::defaultIfBlank(Input::get('sale_price'), "0.00");
+        $mortgage->interest_rate = SmartPassiveIncome::defaultIfBlank(Input::get('interest_rate'), "0.00");
+        $mortgage->percent_down = SmartPassiveIncome::defaultIfBlank(Input::get('term'), "0.00");
+        $mortgage->term = SmartPassiveIncome::defaultIfBlank(Input::get('term'), "0.00");
+        $mortgage->term2 = SmartPassiveIncome::defaultIfBlank(Input::get('term2'), "0.00");
+        $mortgage->calculator = SmartPassiveIncome::defaultIfBlank(Input::get('calculator'), "0.00");
 
         if(isset($mortgage->calculator)){
             $mortgage->monthly_payment = SmartPassiveIncome::calculateMortgage($mortgage->percent_down, $mortgage->sale_price, $mortgage->interest_rate, $mortgage->term);
@@ -130,10 +130,10 @@ class MontecarloController extends BaseController
             $fixedexpense = new Fixedexpense;
             $fixedexpense->realestate_id = $realestate_id;
         }
-        $fixedexpense->taxes = Input::get('taxes');
-        $fixedexpense->insurance = Input::get('insurance');
-        $fixedexpense->utilities = Input::get('utilities');
-        $fixedexpense->misc = Input::get('misc');
+        $fixedexpense->taxes = SmartPassiveIncome::defaultIfBlank(Input::get('taxes'), "0.00");
+        $fixedexpense->insurance = SmartPassiveIncome::defaultIfBlank(Input::get('insurance'), "0.00");
+        $fixedexpense->utilities = SmartPassiveIncome::defaultIfBlank(Input::get('utilities'), "0.00");
+        $fixedexpense->misc = SmartPassiveIncome::defaultIfBlank(Input::get('misc'), "0.00");
         $fixedexpense->save();
 
         $roi = Returnoninvestment::getByReId($realestate_id);
@@ -141,10 +141,12 @@ class MontecarloController extends BaseController
             $roi = new Returnoninvestment;
             $roi->realestate_id = $realestate_id;
         }
-        $roi->down_payment = Input::get('down_payment');
-        $roi->closing_costs = Input::get('closing_costs');
-        $roi->misc_expenses = Input::get('misc_expenses');
-        $roi->init_investment = Input::get('init_investment');
+
+
+        $roi->down_payment = SmartPassiveIncome::defaultIfBlank(Input::get('down_payment'), "0.00");
+        $roi->closing_costs = SmartPassiveIncome::defaultIfBlank(Input::get('closing_costs'), "0.00");
+        $roi->misc_expenses = SmartPassiveIncome::defaultIfBlank(Input::get('misc_expenses'), "0.00");
+        $roi->init_investment = SmartPassiveIncome::defaultIfBlank(Input::get('init_investment'), "0.00");
         $roi->save();
 
         $rentaldetail = compact('rentaldetail');
