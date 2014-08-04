@@ -103,6 +103,8 @@ class RealestatesController extends BaseController
     {
         // Handle the delete confirmation.       
         $estimate = Estimate::getByReId($id);
+        $estimatebest = Estimatebest::getByReId($id);    
+        $estimateworst = Estimateworst::getByReId($id);
         $fixedexpense = Fixedexpense::getByReId($id);
         $mortgage = Mortgage::getByReId($id);
         $rentaldetail = Rentaldetail::getByReId($id);
@@ -111,8 +113,10 @@ class RealestatesController extends BaseController
         $returnoninvestment = Returnoninvestment::getByReId($id);
         $realestate = Realestate::findOrFail($id);
 
-        if(isset($estimate)){
+        if(!isset($estimate)){
             $estimate->delete();
+            $estimatebest->delete();
+            $estimateworst->delete();
             $fixedexpense->delete();
             $rentaldetail->delete();
             $renttier->delete();
